@@ -172,7 +172,7 @@ class PaymentController extends Controller
         $shipmentId     = isset($shipmentinfo['shipment_id']) ? $shipmentinfo['shipment_id'] : 0;
         $ship_method    = $shipmentinfo['ship_method'];
        
-        $items          = $shipmentinfo['product'];           
+        $items          = isset($shipmentinfo['product']) ? $shipmentinfo['product'] : null;           
         if(empty($items))
             return false;
 
@@ -221,7 +221,7 @@ class PaymentController extends Controller
         if($shipmentId)
             $_shipment = $shipments->where('id',$shipmentId)->first();
         else    
-            $_shipment = $shipments->where('order_id',$shipmentinfo['order_id'])->first();
+            $_shipment = $shipments->where('order_id',$shipmentinfo['order_id'])->where('is_deleted',0)->first();
 
         if(empty($_shipment)){
             $shipment   = $shipments->create($shipmentData);    
@@ -304,6 +304,10 @@ class PaymentController extends Controller
 
 
                 if($ship_method == 'gls'){
+					
+					$contryCode = $shipmentinfo['country'];
+					/*if(strlen($contryCode) > 2){
+					}*/
                       
                     $collection = array('shipment_id'       => $shipmentId,
                                         'collection_date'   => $shipmentinfo['collection_date'],
@@ -313,7 +317,7 @@ class PaymentController extends Controller
                                         'city'              => $shipmentinfo['city'],
                                         'phone_no'          => $shipmentinfo['phone_no'],
                                         'extension'         => $shipmentinfo['extension'],
-                                        'country'           => $shipmentinfo['country'],
+                                        'country'           => $contryCode,
                                         'post_code'         => $shipmentinfo['post_code'],
                                         'customer_note'     => $shipmentinfo['gls_note']);   
 
@@ -342,7 +346,8 @@ class PaymentController extends Controller
     }
 	
 	public function WebHookIndex(){
-		
+		 $json = file_get_contents('php://input');
+		 $object = json_decode($json);
 	}
 
 	public function WebHookIndexPOst(){

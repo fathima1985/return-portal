@@ -460,8 +460,8 @@ class DashboardController extends Controller
        $title = $CurrentUser->name.' has assigned a return request case to you.';
 
        if($sentMail){
-            $shipment       = Shipments::find($shipment_id)->first();
-            $orderId        = $shipment->order_id;
+            $shipment       = Shipments::where('id',$shipment_id)->first()->toArray();
+            $orderId        = $shipment['order_id'];
             $details = array('mail_view'=> 'emailUser', 
                                 'subject'   =>  $title,
                                 'title'     =>  $title,

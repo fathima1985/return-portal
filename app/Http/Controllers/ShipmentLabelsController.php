@@ -63,21 +63,33 @@ class ShipmentLabelsController extends Controller
     public function CreateLabel(request $request ){
         $data = $request->input();
         //$order_id = $data['order_id'];
+		
         $_res = array('status'=> 'false','message' => 'invalid');
         $shipments      = new Shipments(); 
         $details        = new ShipmentDetails(); 
         $order_id       = $request->input('order');
         $shipment       = $request->input('shipment');
         $_shipment = $shipments->where('payment_id',$order_id)->where('id',$shipment)->first();
+		
+		
+		
         if(!empty($_shipment)){
             $details_shipment = $details->where('shipment_id',$_shipment->id)->first();
             $shiping_method   = $details_shipment->shiping_method;
             $ShipmentLabels = new ShipmentLabels();
             $ship_data = $ShipmentLabels->where('shipment_id',$_shipment->id)->first();    
 			
-            if(empty($ship_data)){
+			
+            if(!$ship_data){
+				
+				$log = new PortalLogs();			
+				$logs = array(  'source_id' => $_shipment->id,
+								'type'      => '3',
+								'note'      => 'Return label create request placed');                        
+				$log->create($logs);
+				
                 switch($shiping_method){
-                    case 'gls':
+                    case 'gls':						
                         $ship_data = $this->getGLSLabels($details_shipment,$_shipment);
                         break;
                     case 'ups':
@@ -103,7 +115,7 @@ class ShipmentLabelsController extends Controller
                         $logs = array(  'source_id' => $_shipment->id,
                                         'type'      => '3',
                                         'note'      => 'Return label created with '.$shiping_method.' Tracking  Code :'.$ship_data['TrackingCode']);
-                        $log = new PortalLogs();
+                      //  $log = new PortalLogs();
                         $res = $log->create($logs);      
                }
             }
@@ -118,7 +130,7 @@ class ShipmentLabelsController extends Controller
     }
 
     public function GenerateHtmlResponse($data,$method){		
-        $labelInfo  = $data['label_info'];
+        $labelInfo  = isset($data['label_info']) ? $data['label_info'] : array();
         $content    = '';
         switch($method):
             case 'gls':
@@ -197,8 +209,6 @@ class ShipmentLabelsController extends Controller
     public function getGLSLabels($details_shipment = null,$shipment = null){
         $shipmentId = $shipment->id;
         $customer  = json_decode($details_shipment->customer_details);
-
-       
         $address = new ShipmentAddress();  
         $address_item = $address->where('shipment_id',$shipmentId)->first(); 
 
@@ -270,7 +280,7 @@ class ShipmentLabelsController extends Controller
                                 "addresses"             => $gls_address,
                                 "customerNo"            => '51430014',
                                 "customerSubjectName"   => "",
-                                "reference"             => $shipment->order_id, 
+                                "reference"             => $shipment->order_id."-RR", 
                                 "units"                 => $units,  
                                 "shippingSystemName"    => "",                                
                                 "shippingSystemVersion" => "",
@@ -280,8 +290,14 @@ class ShipmentLabelsController extends Controller
                          
         $response = Http::withBody(json_encode($gls_params),'application/json')->post($this->GLS_Endpoint);
         $response_data = array();
+		
+		
+		
+				
         if ($response->getStatusCode() == 200) { // 200 OK
-            $res_data = json_decode($response->getBody()->getContents(),true);        
+            $res_data = json_decode($response->getBody()->getContents(),true); 
+
+			
             $response_data['TrackingCode']  = $res_data['units'][0]['unitNo'];
             $response_data['TrackingLink']  = $res_data['shipmentTrackingLink'];   
             $response_data['label_pdf']     = $res_data['shipmentTrackingLink'];

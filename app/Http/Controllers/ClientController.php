@@ -29,7 +29,7 @@ class ClientController extends Controller
 		$shipments     = new Shipments();
 
 		if($txn_id != ''){
-			$_shipment = $shipments->where('payment_id',$txn_id)->first();
+			$_shipment = $shipments->where('payment_id',$txn_id)->where('is_deleted',0)->first();
 			if(!empty($_shipment)){				 
 				$_details = $details->where('shipment_id',$_shipment->id)->first();	
 				if(isset($post_request['type']) && $post_request['type'] == 'redirect'){					 
