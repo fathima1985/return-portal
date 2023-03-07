@@ -1,0 +1,63 @@
+locale,en
+return_portal,RETURN PORTAL
+return_step_title,HOW EASY TO RETURN YOUR DELUXERIE ORDER?
+step,Step
+step_1,Please read carefully our return policy by clicking here.
+step_2,Find the order and select the items that you want to return by filling out an online return form below.
+step_3,Please give us some details about your return in next steps of the online return form.
+step_4,Select your return shipping method.<br/><span>(We are offering paid shipping label with the discounted prices or you can send the order back at your expense with the any courier you want.<strong>Shipment labels is free for the store credit returns</strong>
+step_5,(IF APPLICABLE): Select your payment method for your return shipment.<br/><span>(If you have choose paid shipment method then you can pay the shipping amount online or also you can select the deduction from your order amount)</span>
+step_6,(IF APPLICABLE): Print shipping label and stamp it to the return package.<br/><span>(Printing and stamping shipping label on the package is not mandatory for all couriers you can check the instructions after get the label online)</span>
+step_7,Prepare your return package and drop-off at the nearest parcel shop.
+step_8,Your return will be processed in 14 days after delivered to the our warehouse.
+have_questions,STILL HAVE QUESTIONS?
+contact_us,CONTACT US
+find_your_order,FIND YOUR ORDER
+order_number,Order Number
+Email Address,Email Address
+email,Email
+used_during_your_order,used during your order
+FIND MY ORDER,FIND MY ORDER
+order_success,We have found your order. Please select item(s) and return reasons below.
+order_failed,"oops, No order found, please check your email address and order number"
+PROCEED TO THE NEXT STEP,PROCEED TO THE NEXT STEP
+Note,Note
+Save Details,Save Details
+Please select the return reason,Please select the return reason
+Size is not fit,Size is not fit
+Was there a hygiene seal on the packaging of the item?,Was there a hygiene seal on the packaging of the item?
+Have you opened the packaging?,Have you opened the packaging?
+Yes,Yes
+No,No
+Amount Paid,Amount Paid
+Click here to return this product.,Click here to return this product.
+Please select return type,Please select return type
+store_creadit,Store Credit / Coupon (Free Return Label)
+exchange,Exchange (Earn 100 Deluxerie Points for your next purchase: valued 5€)
+refund,Refund
+Save Details,Save Details
+RETURN SHIPMENT METHOD,RETURN SHIPMENT METHOD
+homer_tinstruction,You can drop-off your return package to the nearest HOMERR location.
+ups_tinstruction,You can drop-off your return package to the nearest UPS AccessPoint.
+gls_tinstruction,Your return package will be collected by the GLS from desired address and date.
+ppl_tinstruction,Your return package will be collected by the GLS from desired address and date.
+RETURN TO PREVIOUS STEP,RETURN TO PREVIOUS STEP
+RETURN SUMMARY,RETURN SUMMARY
+EDIT RETURN DETAILS,EDIT RETURN DETAILS
+"RETURN SHIPMENT METHOD	","RETURN SHIPMENT METHOD	"
+EDIT SHIPMENT METHOD,EDIT SHIPMENT METHOD
+PAYMENT METHOD,PAYMENT METHOD
+ONLINE PAYMENT,ONLINE PAYMENT
+online_payment_text,You can pay online with the various payment methods for your return shipping label.
+DEDUCTION FROM THE REFUND,DEDUCTION FROM THE REFUND
+deduction_payment_text,With this method we can deduct the return shipping amount from your refund amount.
+dear_customer,"Dear customer,"
+THANK YOU,THANK YOU
+thanks_text,"We have received your return request and payment for the return shipping label.
+							You can download your return shipment label by the clicking the button below. 
+							Your return details and shipping label also will be sent as an e-mail to you.
+							lease check your spam-box in case that you didn’t received."
+download_label,CLICK HERE TO DOWNLOAD YOUR SHIPPING LABEL
+thanks_note,"It may take up to 10 business days to process your return, after the your package has been reached us."
+shipping_error,Please select the shipping
+validation_error,Please fill all required fields
