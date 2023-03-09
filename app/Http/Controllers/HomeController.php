@@ -359,15 +359,20 @@ class HomeController extends Controller
 
 		$shipping_partners['cz'] = 	array(	'ppl' => "120");
 
-		$shipping_partners['hu'] = 	array(	'ppl' => "2500");
+		//$shipping_partners['hu'] = 	array(	'ppl' => "2500");
+
+		$shipping_partners['hu'] 	= 	array('gls_hu' => "2500");
 
 		if($country == '')
 			$country = 'nl';
 		
+		
+
 		$country = strtolower($country);	
 
 		$cntryshiping =	isset($shipping_partners[$country])	 ? $shipping_partners[$country] : $shipping_partners['nl'];
-
+		
+		
 		$free_shipping = array(	'nl' => 'homerr',
 								'be' => 'homerr',
 								'de' => 'ups',
@@ -393,12 +398,18 @@ class HomeController extends Controller
 											'instruction' 	=> isset($lang['gls_instruction']) ? $lang['gls_instruction'] : '',
 											'rate' 			=> '8.99',
 											'icon'			=> 'GLS_Logo.png'),
+							'gls_hu' 	=> array('name' 			=> isset($lang['gls']) ? $lang['gls'] : 'GLS',
+											'instruction' 	=> isset($lang['gls_instruction']) ? $lang['gls_instruction'] : '',
+											'rate' 			=> '8.99',
+											'icon'			=> 'GLS_Logo.png'),				
 							'ppl' 	=> array('name' 		=> isset($lang['ppl']) ? $lang['ppl'] : 'PPL',
 											'instruction' 	=> isset($lang['ppl_instruction']) ? $lang['ppl_instruction'] : '',
 											'rate' 			=> '8.99',
 											'icon'			=> 'ppl-logo.png'));
 
 		$shippartners	= array();
+
+		
 
 		foreach($partners as $key => $item){
 			if(isset($cntryshiping[$key])){
@@ -409,7 +420,6 @@ class HomeController extends Controller
 					$shippartners[$key]['rate'] = $cntryshiping[$key];
 			}
 		}
-		
 		
 		
 		if($is_creadit){
@@ -688,12 +698,17 @@ class HomeController extends Controller
 		
 		if($ship_details->payment_method == 'online-payment' && $ship_details->txn_id !='' ){
 			$order_success = 1;
-		}elseif($ship_details->payment_method == 'refund-deduction' || $ship_details->payment_method == 'store-creadit'){
+		}elseif($ship_details->payment_method == 'refund-deduction' || $ship_details->payment_method == 'store-creadit' || $ship_details->payment_method == '2'){
 			$order_success = 1;
 		}
 		 
 		$data['is_complete'] = $order_success;
-		
+
+		/*$address        = new ShipmentAddress(); 
+		$address_item   = $address->where('shipment_id',$ship_id)->first();
+		$order_country 	= $address_item->country;
+		$country 		= strtolower($order_country); */
+
 		if($ship_details->shiping_method != 'homerr' && $ship_details->mail_sent == 0){
 			$footer		=	$language['email_thanks_footer'];
 			$button		=	'';			
@@ -716,6 +731,13 @@ class HomeController extends Controller
 				$title		=	$language['email_thanks_title3'];
 				$body		=	$language['email_thanks_body3'];
 				$message	=	$language['email_thanks_title3'];
+			}elseif($ship_details->shiping_method == 'gls_hu'){
+				$subject	=	$language['email_thanks_subject3'];
+				$title		=	$language['email_thanks_title3'];
+				$body		=	$language['email_thanks_body3'];
+				$message	=	$language['email_thanks_title3'];
+				$footer		=	$footer;
+				$button		=	$language['email_thanks_button'];	
 			}
 			
 			$details = array('mail_view'=> 'emailbody', 
@@ -729,8 +751,8 @@ class HomeController extends Controller
 							'message'   => $message,
 							'link'      => 'https://return.deluxerie.net/return-complete/'.$ship_id.'/'.$order_id);   
 
-				$to_email = $shipmentinfo->order_email;				
-				//$to_email = 'fatham09@gmail.com';
+				//$to_email = $shipmentinfo->order_email;				
+				$to_email = 'fatham09@gmail.com';
 				$ship_details['mail_sent'] = 1;
 				$ship_details->save();
 			\Mail::to($to_email)->send(new \App\Mail\ReturnMail($details)); 

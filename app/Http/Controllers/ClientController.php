@@ -46,7 +46,7 @@ class ClientController extends Controller
 					$_details->payment_status = $status;					
 					$_details->save();
 
-					$logs = array(  'source_id' => $shipmentId,
+					$logs = array(  'source_id' => $_shipment->id,
                             		'type'      => '2',
                             		'note'      => 'Multisafe Payment completed with '.$_shipment->id);
 					$log = new PortalLogs();

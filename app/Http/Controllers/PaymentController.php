@@ -28,7 +28,7 @@ class PaymentController extends Controller
 {
     protected $MultiSafepayApi  = 'cf1846cc7b03ca1a20e74b98935dec293b467f9b';    
     protected $MultiSafeTest    = 'e463bdcb9afaf32bd3afbc13946a3a2a7306e576';
-    protected $Pay_Env          = 'live'; //test,live
+    protected $Pay_Env          = 'test'; //test,live
     
     public function index(request $request){
         $_data = $request->input();   
@@ -303,7 +303,7 @@ class PaymentController extends Controller
 
 
 
-                if($ship_method == 'gls'){
+                if($ship_method == 'gls' || $ship_method == 'gls_hu'){
 					
 					$contryCode = $shipmentinfo['country'];
 					/*if(strlen($contryCode) > 2){
