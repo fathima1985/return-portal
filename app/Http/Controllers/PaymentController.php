@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Response;
 use Session;
@@ -23,12 +24,13 @@ use App\Models\ShipmentItems;
 use App\Models\ShipmentLabels;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\PortalLogs;
+use File;
 
 class PaymentController extends Controller
 {
     protected $MultiSafepayApi  = 'cf1846cc7b03ca1a20e74b98935dec293b467f9b';    
     protected $MultiSafeTest    = 'e463bdcb9afaf32bd3afbc13946a3a2a7306e576';
-    protected $Pay_Env          = 'test'; //test,live
+    protected $Pay_Env          = 'live'; //test,live
     
     public function index(request $request){
         $_data = $request->input();   
@@ -121,7 +123,8 @@ class PaymentController extends Controller
 								    "pt"=>"pt_PT",								    
 								    "cs"=>"cs_CZ",
 								    "hu"=>"en_HU",
-								    "ro"=>"en_RO");
+								    "ro"=>"en_RO",
+									"sk"=>"en_SK");
 							   
             $locale   =  isset($langSetup[$country_code]) ? $langSetup[$country_code] : 'nl_NL';
 
@@ -193,6 +196,11 @@ class PaymentController extends Controller
         $orderdata      = array();
         if(!empty($order_data))
             $orderdata = $order_data['data'];
+		
+		
+		$order_items    = $orderdata['items'];
+		 if(empty($order_items))
+            return false;
 
         $customer       = $orderdata['billing'];    
         $site           = $orderdata['site'];
@@ -201,6 +209,23 @@ class PaymentController extends Controller
         $_symbol        = $orderdata['currency_symbol'];
         $currency       = $orderdata['currency'];
         $payment_method = $shipmentinfo['payment_method'];
+		
+		$orderItems     = $orderdata['items']; 
+
+        if($ship_method == 'gls_return'){
+            $_shipping  = $orderdata['shipping'];
+            $shipmentinfo['collection_date'] = date('Y-m-d H:i:s');
+            $shipmentinfo['name_surname']   = $_shipping['first_name'].' '. $_shipping['last_name'];
+            $shipmentinfo['street']         = $_shipping['address_1'];
+            $shipmentinfo['house_no']       = '10';
+            $shipmentinfo['city']           = $_shipping['city'];
+            $shipmentinfo['phone_no']       = $_shipping['phone'];
+            $shipmentinfo['extension']      = '';
+            $shipmentinfo['country']        = $_shipping['country'];
+            $shipmentinfo['post_code']      = $_shipping['postcode'];
+            $shipmentinfo['gls_note']       = $_shipping['address_1'];
+        }	
+		
         
         $siteReference = substr($shipmentinfo['order_id'], 0, 2);	
         
@@ -218,7 +243,7 @@ class PaymentController extends Controller
         $shipments  = new Shipments();     
         $currency       = $orderdata['currency'];
         $currency_symbol= $orderdata['currency_symbol'];
-        $orderItems     = $orderdata['items']; 
+        
 
 
         if($shipmentId)
@@ -262,7 +287,7 @@ class PaymentController extends Controller
                 $ship_details->update($shipmentDetails);   
 			}
 
-            $order_items    = $orderdata['items'];
+            
             $return_reason  = $shipmentinfo['return_reason'];
             $hygiene_seal   = $shipmentinfo['hygiene_seal'];
             $package_opend  = isset($shipmentinfo['package_opend']) ? $shipmentinfo['package_opend'] : '';
@@ -305,9 +330,10 @@ class PaymentController extends Controller
                 else    
                     $store_item->update($order_item);
 
+				
+				$pickup 			= array('_gls','gls','gls_hu','gls_ro','gls_sk','gls_return');
 
-
-                if($ship_method == 'gls' || $ship_method == 'gls_hu' || $ship_method == 'ppl'){
+                if(in_array($ship_method,$pickup) !== false){
 					
 					$contryCode = $shipmentinfo['country'];
 					/*if(strlen($contryCode) > 2){

@@ -140,10 +140,14 @@
                         </div>
                         @if(!empty($order_details))
                           @foreach($order_details as $_key => $info_order)
-                          <div class="mb-2 d-flex align-items-center justify-content-between  flex-wrap"> 
-                            <p class="text-dark text-sm opacity-8 mb-0 col-3">{{$info_order['label']}}</p>
-                            <h6 class="text-dark mb-0 text-xs text-secondary mb-0 col-9">{{$info_order['object']['name']}}</h6>   
-                          </div>
+						  @if(!empty($info_order))
+							  <div class="mb-2 d-flex align-items-center justify-content-between  flex-wrap"> 
+								<p class="text-dark text-sm opacity-8 mb-0 col-3">{{$info_order['label']}}</p>
+								 @if(isset($info_order['object']['name']))
+									<h6 class="text-dark mb-0 text-xs text-secondary mb-0 col-9">{{$info_order['object']['name']}}</h6>   
+								@endif	
+							  </div>
+						  @endif
                           @endforeach
                         @endif
                         <div class="mb-2 d-flex align-items-center justify-content-between  flex-wrap"> 
@@ -185,8 +189,9 @@
                   </div>
                 </div>
               @endforeach
-
-            @if($details['shiping_method'] == 'gls' || $details['shiping_method'] == 'gls_hu' || $details['shiping_method'] == 'ppl')
+			  
+			
+            @if($data['pickup'] == 1)
             <div class="card p-3 mt-3 mb-3"> 
               <h6 class="mb-3">{{ __('Pickup Details') }}</h6>
             
@@ -329,7 +334,7 @@
               @elseif($details['shiping_method'] == 'ups') 
 				<a href="{!!$label['label_pdf']!!}" download><img src="{!!$label['label_pdf']!!}" alt="{{$label['TrackingCode']}}" style="width:100%; max-width:100%;transform:rotate(90deg);margin:5rem 0px"/></a>
 				<a href="https://www.ups.com/track?loc=en_NL&requester=QUIC&tracknum={{$label['TrackingCode']}}/trackdetails" target="_blank"><strong>{!!$label['TrackingCode']!!}</stong></a>
-			  @elseif($details['shiping_method'] == 'gls_hu' || $details['shiping_method'] == 'ppl')         
+			  @elseif($details['shiping_method'] == 'gls_hu' || $details['shiping_method'] == 'ppl' || $details['shiping_method'] == 'gls_ro' || $details['shiping_method'] == 'gls_return')         
 				<a href="{!!$label['label_pdf']!!}" download>
 					<span class="icon" style="position: relative;width: 100%;height: 19rem;text-align: center;">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
@@ -348,9 +353,9 @@
                 </g>
                 </svg></span>
 				</a>
-				    <a href="{!!$label['label_pdf']!!}" target="_blank" download><strong>{!!$label['TrackingCode']!!}</stong></a>	
+				    <a href="{!!$label['TrackingLink']!!}" target="_blank"><strong>{!!$label['TrackingCode']!!}</stong></a>	
               @elseif($details['shiping_method'] == 'gls')
-              <a href="{!!$label['label_pdf']!!}" download><strong>{!!$label['TrackingCode']!!}</stong></a> 
+              <a href="{!!$label['TrackingLink']!!}" download><strong>{!!$label['TrackingCode']!!}</stong></a> 
               @endif
             </div>
             </div>
@@ -364,7 +369,7 @@
                   <div role="alert" aria-live="assertive" aria-atomic="true" class="toast show mb-2" data-autohide="false">                  
                     
                     <div class="toast-header text-right">                             
-                      <strong class="mr-auto text-right">{!!$log['note']!!}</strong>                   
+                      <div class="mr-auto text-right"> {!! nl2br(e($log['note']), false) !!}</div>                   
                     </div>
                     <div class="toast-body text-xxs opacity-8">
 						{!!$log->created_at->format('d-m-Y H:i:s A')!!}

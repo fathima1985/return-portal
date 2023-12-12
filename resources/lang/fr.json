@@ -145,5 +145,20 @@
    "return_success_content":"Une demande de retour a déjà été créée avec l'ID de commande {order_id}",
    "return_exist_title":"Veuillez nous accorder un peu de temps pour traiter votre retour.",
    "return_exist_content":"Une demande de retour a déjà été créée avec le {order_id}",
-   "return_exist_footer":"Une demande de retour a déjà été créée avec le {order_id}"
+   "return_exist_footer":"Une demande de retour a déjà été créée avec le {order_id}",
+   "thanks_gls_hu":"Nous avons reçu votre demande de retour et les informations de collecte de votre colis.\n\t\t\t\t\t\t\tLes détails de la collecte ont été envoyés au système GLS. Un coursier de GLS arrivera à l'adresse indiquée à la date indiquée pour l'enlèvement. \n\t\t\t\t\t\t\tVos informations de retour vous seront également envoyées par e-mail. Si ce n'est pas le cas, veuillez vérifier votre boîte de courrier indésirable.",
+   "email_thanks_gls_hu_title":"Demande de Retour",
+   "email_thanks_gls_hu_subject":"Demande de Retour pour votre Commande Deluxerie",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Cher/Chère client(e),<\/span><br\/><span style='color: #000000;'>Nous avons bien reçu votre demande de retour.<br\/></span><span style='color: #000000;'>Vous pouvez télécharger votre étiquette d'expédition de retour en cliquant sur le bouton ci-dessous.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"Si vous avez besoin d'aide, n'hesitez pas à contacter le service client Deluxerie.",
+   "email_thanks_gls_hu_button":"CLIQUEZ ICI POUR TÉLÉCHARGER VOTRE ÉTIQUETTE D'EXPÉDITION",
+   "order_return_exceed":"Votre commande n'est pas éligible au retour car elle a dépassé le délai de retour ou de remplacement de 30 jours conformément à notre <a href='#' target='_blank'>politique de retour</a>.",
+   "gls_return":"GLS - ParcelShop",
+   "gls_return_instruction":"Vous pouvez déposer votre colis de retour au GLS ParcelShop le plus proche.<br/>Une étiquette d'expédition PDF sera fournie pour les retours GLS, l'étiquette d'expédition doit donc être imprimée.",   
+   "thanks_gls_return":"Nous avons bien reçu votre demande de retour.\n\t\t\t\t\t\t\tVous pouvez télécharger votre étiquette d'expédition de retour en cliquant sur le bouton ci-dessous.\n\t\t\t\t\t\t\tVos informations de retour vous seront également envoyées par e-mail. Si ce n'est pas le cas, veuillez vérifier votre boîte de courrier indésirable.",
+   "email_thanks_gls_return_title":"Demande de Retour",
+   "email_thanks_gls_return_subject":"Demande de Retour pour votre Commande Deluxerie",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Cher/Chère client(e),<\/span><br\/><span style='color: #000000;'>Nous avons bien reçu votre demande de retour.<br\/></span><span style='color: #000000;'>Vous pouvez télécharger votre étiquette d'expédition de retour en cliquant sur le bouton ci-dessous.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Si vous avez besoin d'aide, n'hesitez pas à contacter le service client Deluxerie.",
+   "email_thanks_gls_return_button":"CLIQUEZ ICI POUR TÉLÉCHARGER VOTRE ÉTIQUETTE D'EXPÉDITION"
 }

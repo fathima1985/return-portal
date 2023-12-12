@@ -145,5 +145,20 @@
    "return_success_content":"Es wurde bereits eine Rücksendeanfrage mit der Bestell-ID erstellt {order_id}",
    "return_exist_title":"Bitte geben Sie uns etwas Zeit, um Ihre Rücksendung zu bearbeiten.",
    "return_exist_content":"Es wurde bereits eine Rücksendeanfrage mit der {order_id} erstellt",
-   "return_exist_footer":"Es wurde bereits eine Rücksendeanfrage mit der {order_id} erstellt"
+   "return_exist_footer":"Es wurde bereits eine Rücksendeanfrage mit der {order_id} erstellt",
+   "thanks_gls_hu":"Wir haben Ihren Rücksendeantrag und die Details zur Paketabholung erhalten.\n\t\t\t\t\t\t\tAbholdetails wurden an das GLS-System gesendet. Ein Fahrer der GLS kommt zum gewählten Termin zur Abholung an die angegebene Adresse. \n\t\t\t\t\t\t\tIhre Rücksendedaten und das Versandetikett werden Ihnen ebenfalls per E-Mail zugesandt. Bitte überprüfen Sie Ihre Spam-Box, falls Sie keine erhalten haben.",
+   "email_thanks_gls_hu_title":"Rücksendeantrag",
+   "email_thanks_gls_hu_subject":"Rücksendeantrag für Ihre Deluxerie-Bestellung",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Liebe Kundin / Lieber Kunde,<\/span><br\/><span style='color: #000000;'>Wir haben Ihre Rücksendeanfrage erhalten.<br\/></span><span style='color: #000000;'>Sie können Ihr Rücksendeetikett herunterladen, indem Sie auf die Schaltfläche unten klicken.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"Bitte zögern Sie nicht, den Deluxerie-Kundendienst zu kontaktieren, wenn Sie Hilfe benötigen.",
+   "email_thanks_gls_hu_button":"KLICKEN SIE HIER, UM IHR VERSANDETIKETT HERUNTERZULADEN",
+   "order_return_exceed":"Ihre Bestellung kann nicht zurückgegeben werden, da die Rückgabe- oder Umtauschfrist von 30 Tagen gemäß unseren <a href='#' target='_blank'>Rückgabebedingungen</a> überschritten wurde.",
+   "gls_return":"GLS - PaketShop",
+   "gls_return_instruction":"Sie können Ihr Rücksendepaket im nächstgelegenen GLS PaketShop abgeben.<br/>Für die GLS-Rücksendungen wird ein PDF-Versandetikett bereitgestellt, daher muss das Versandetikett ausgedruckt werden.",   
+   "thanks_gls_return":"Wir haben Ihre Rücksendeanfrage erhalten.\n\t\t\t\t\t\t\tSie können Ihr Rücksendeetikett herunterladen, indem Sie auf die Schaltfläche unten klicken.\n\t\t\t\t\t\t\tIhre Rücksendedaten und das Versandetikett werden Ihnen ebenfalls per E-Mail zugesandt. Bitte überprüfen Sie Ihre Spam-Box, falls Sie keine erhalten haben.",
+   "email_thanks_gls_return_title":"Rücksendeantrag",
+   "email_thanks_gls_return_subject":"Rücksendeantrag für Ihre Deluxerie-Bestellung",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Liebe Kundin / Lieber Kunde,<\/span><br\/><span style='color: #000000;'>Wir haben Ihre Rücksendeanfrage erhalten.<br\/></span><span style='color: #000000;'>Sie können Ihr Rücksendeetikett herunterladen, indem Sie auf die Schaltfläche unten klicken.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Bitte zögern Sie nicht, den Deluxerie-Kundendienst zu kontaktieren, wenn Sie Hilfe benötigen.",
+   "email_thanks_gls_return_button":"KLICKEN SIE HIER, UM IHR VERSANDETIKETT HERUNTERZULADEN"
 }

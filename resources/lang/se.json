@@ -145,5 +145,20 @@
    "return_success_content":"En returförfrågan har redan skapats med beställnings-ID {order_id}",
    "return_exist_title":"Ge oss lite tid att behandla din retur.",
    "return_exist_content":"En returförfrågan har redan skapats med {order_id}",
-   "return_exist_footer":"En returförfrågan har redan skapats med {order_id}"
+   "return_exist_footer":"En returförfrågan har redan skapats med {order_id}",
+   "thanks_gls_hu":"Vi har tagit emot din returförfrågan och paketupphämtningsuppgifter.\n\t\t\t\t\t\t\tUpphämtningsuppgifter har skickats till GLS-systemet. En förare från GLS kommer till den angivna adressen på det valda datumet för hämtning. \n\t\t\t\t\t\t\tDin returinformation kommer också att skickas som ett e-postmeddelande till dig. Vänligen kontrollera din skräppost om du inte fått det.",
+   "email_thanks_gls_hu_title":"Returförfrågan",
+   "email_thanks_gls_hu_subject":"Returförfrågan för din Deluxerie-beställning",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Kära kund,<\/span><br\/><span style='color: #000000;'>Vi har tagit emot din returförfrågan.<br\/></span><span style='color: #000000;'>Du kan ladda ner din returfraktetikett genom att klicka på knappen nedan.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"Tveka inte att kontakta Deluxerie kundtjänst om du behöver hjälp.",
+   "email_thanks_gls_hu_button":"KLICKA HÄR FÖR ATT LADDA NER DIN FRAKTETIKET",
+   "order_return_exceed":"Din beställning är inte kvalificerad för retur eftersom den har överskridit 30 dagars retur- eller ersättningsperiod enligt vår <a href='#' target='_blank'>returpolicy</a>.",
+   "gls_return":"GLS (DB Schenker) - Paketbutik",
+   "gls_return_instruction":"Du kan lämna in ditt returpaket till närmaste GLS (DB Schenker) ParcelShop.<br/>En PDF-fraktetikett kommer att tillhandahållas för GLS-returerna, du behöver skriva ut fraktetiketten.",   
+   "thanks_gls_return":"Vi har tagit emot din returförfrågan.\n\t\t\t\t\t\t\tDu kan ladda ner din returfraktetikett genom att klicka på knappen nedan.\n\t\t\t\t\t\t\tDin returinformation kommer också att skickas som ett e-postmeddelande till dig. Vänligen kontrollera din skräppost om du inte fått det.",
+   "email_thanks_gls_return_title":"Returförfrågan",
+   "email_thanks_gls_return_subject":"Returförfrågan för din Deluxerie-beställning",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Kära kund,<\/span><br\/><span style='color: #000000;'>Vi har tagit emot din returförfrågan.<br\/></span><span style='color: #000000;'>Du kan ladda ner din returfraktetikett genom att klicka på knappen nedan.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Tveka inte att kontakta Deluxerie kundtjänst om du behöver hjälp.",
+   "email_thanks_gls_return_button":"KLICKA HÄR FÖR ATT LADDA NER DIN FRAKTETIKET"
 }

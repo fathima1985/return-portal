@@ -1,10 +1,12 @@
+
+const pickup = ['gls','gls_hu','gls_ro','gls_sk'];
 jQuery(document).ready(function($){	
 
 	$(document.body).on('click','a.return-prev',function(e){
 		history.back();
 		//alert("asdasd");
 	});
-
+	
 	$(document.body).on('click','.dropdown-language .dropdown-toggle',function(e){
 		$('.dropdown-language .dropdown-menu').toggleClass('show');
 	});
@@ -70,7 +72,7 @@ jQuery(document).ready(function($){
 	$(document.body).on('change','input.ship_method',function(e){
 		e.preventDefault();
 		var shipmethod = $(this).val();		
-		if($(this).is(':checked') && (shipmethod == 'gls' || shipmethod == 'gls_hu' || shipmethod == 'ppl')){
+		if($(this).is(':checked') && pickup.includes(shipmethod)){
 			$('.gls-wrapper').fadeIn();
 			$('.gls-wrapper .form-control').each(function(){
 				if($(this).hasClass('required')){
@@ -88,13 +90,14 @@ jQuery(document).ready(function($){
 
 	});
 
-	$('form.confirm-payment').submit(function(e){
+	$('form.confirm-payment').submit(function(e){		
+		var currentShip = $('input.ship_method:checked').val();
 		if($('input.ship_method:checked').length == 0){
 			e.preventDefault();
 			$('.error-message').html(lang.shipping_error).show();
 			$("html, body").animate({ scrollTop: $('form.confirm-payment').offset().top });
 			return false;
-		}else if($('input.ship_method:checked').val() == 'gls' || $('input.ship_method:checked').val() == 'gls_hu' || $('input.ship_method:checked').val() == 'ppl'){
+		}else if(pickup.includes(currentShip)){
 			var error = '';
 			$('.gls-wrapper .form-control').each(function(){
 				var _val = $(this).val();
@@ -209,6 +212,10 @@ jQuery(document).ready(function($){
 
 	});
 	
+	if($(document.body).find('.confirm-payment') && $(document.body).find('input.ship_method').length == 1){
+		$('input.ship_method').trigger('click').prop('checked',true);
+	}
+	
 	$(document.body).on('click','.product-item a.return-item',function(e){
 		var _itemId 	= $(this).data('line');
 		var _wrapper	= $('#item-'+_itemId);
@@ -221,7 +228,9 @@ jQuery(document).ready(function($){
 			_wrapper.find('.confirm-return').addClass('d-none');
 			_wrapper.find('.return-submission').html('');
 			$(this).addClass('d-none');
-			_wrapper.find('a.return-item.edit-return').removeClass("d-none").show();
+			_wrapper.find('a.return-item').removeClass("d-none").show();
+			_wrapper.find('a.return-item.edit-return').addClass("d-none");
+			
 		}else{	
 			_wrapper.addClass('return-this');
 			_wrapper.find('.product-data').hide();	
@@ -295,6 +304,22 @@ jQuery(document).ready(function($){
 		}
 	});
 	//return false;    
+	
+	
+	var current_url	= window.location.href;
+	//console.log(current_url);
+	if(current_url.indexOf('?doreturn') > -1 && $(document.body).find('#rorder_id').length > 0){
+		
+		var queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		urlPath = current_url.replace(queryString,'');
+		const orderno = urlParams.get('id');		
+		const orderemail = urlParams.get('email');
+		$('#rorder_id').val(orderno);
+		$('#rorder_email').val(orderemail);
+		$('#order-form').trigger('submit');
+		window.history.pushState({"html":"","pageTitle":""},"", urlPath);
+	}
 
 
 	var _ship_method = '';
@@ -372,7 +397,9 @@ function rendor_products(_object){
 		var _attr = '';
 		var attributes = product.attributes;
 		$.each(attributes,function(attr,dataAttr){
-			_attr += '<p class="attributes product-'+dataAttr.object.taxonomy+'"><span>'+dataAttr.label+':</span>'+dataAttr.object.name+'</p>';
+			if(dataAttr.object.name != 'undefined'){
+				_attr += '<p class="attributes product-'+dataAttr.object.taxonomy+'"><span>'+dataAttr.label+':</span>'+dataAttr.object.name+'</p>';
+			}
 		});
 		
 		var _total 		= product.total;
@@ -389,7 +416,8 @@ function rendor_products(_object){
 									'<img src="'+product.product_thumb+'" alt="'+product.product_name+'" />'+
 								'</div>'+
 								'<div class="product-information col-md-10 col-sm-9 col-xs-12">'+
-									'<h3 class="product-title pb-2 mb-3">'+product.product_name+'</h3>'+					'<div class="return-submission"></div>'+
+									'<h3 class="product-title pb-2 mb-3">'+product.product_name+'</h3>'+					
+									'<div class="return-submission"></div>'+
 									'<div class="product-data">'+
 									'<p class="product-sku"><span>'+lang.item_sku+':</span>'+product.sku+'</p>'+_attr+
 									'<p class="product-ampunt"><span>'+lang.amount_paid+':</span>'+curSyb+' '+_total+'</p>'+
@@ -438,9 +466,33 @@ function ajaxAction($data,$container,$method,$url){
 			
         },
         success: function (res){  
-			var _ship_method = $('#confirm_shiping_method').val();	
-			if(typeof(res.TrackingCode) != 'undefined'){
-				if(_ship_method != 'gls'){
+			var _ship_method = $('#confirm_shiping_method').val();
+			
+			if(typeof(res.error) == 'string'){
+								
+				console.log("_____12345",typeof(res.error));	
+				
+				$('.alert-success').each(function(){
+					$(this).addClass('d-none');
+				})
+				$('.alert-danger').each(function(){
+					$(this).removeClass('d-none');
+				})
+				$('.alert-danger').html(res.message).show();
+				$("html, body").animate({ scrollTop: $('form.get-orders').offset().top });
+				return false;
+				
+			}else if(typeof(res.TrackingCode) != 'undefined'){
+				if(res.is_link == 'gls_return'){
+					$('#create-label').addClass('d-none');
+					$('.label-results').html(res.html).removeClass('d-none');
+					var a = document.createElement('a');
+							a.href = res.label_pdf;
+							a.download = res.basename;
+							document.body.appendChild(a);
+							a.click();
+						document.body.removeChild(a);
+				}else if(_ship_method != 'gls'){
 					$('#create-label').addClass('d-none');
 					$('.label-results').html(res.html).removeClass('d-none');
 					var a = document.createElement('a');
@@ -449,7 +501,7 @@ function ajaxAction($data,$container,$method,$url){
 							document.body.appendChild(a);
 							a.click();
 						document.body.removeChild(a);
-				}						
+				} 						
 			}else if(res.status == 'exsist'){
 				window.location.href = res.redirect;
 			}else if(res.status == 'true'){
@@ -457,6 +509,7 @@ function ajaxAction($data,$container,$method,$url){
 				rendor_products(orderinfo);
 				$('.order_information').html('<textarea name="orderjson" class="d-none">'+JSON.stringify(orderinfo)+'</textarea>');
 			}else if(res.status == 'false'){
+				
 				$('.alert-success').each(function(){
 					$(this).addClass('d-none');
 				})

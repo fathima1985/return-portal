@@ -29,7 +29,7 @@
 							@endif
 						</div>
 						
-							<div class="col-md-10 col-xss-12 mt-5 col-sm-12" @if($shiping_method == 'ups' or $shiping_method == 'ppl' or $shiping_method == 'homerr' or $shiping_method == 'gls_hu') style="" @else style="display:none;" @endif>
+							<div class="col-md-10 col-xss-12 mt-5 col-sm-12" @if($show_button) style="" @else style="display:none;" @endif>
 								<form action="/confirm/create-label" class="create-label" id="create-label" method="post">
 									@csrf
 									<input type="hidden" name="shipment" value="{{$shipment_id}}" />

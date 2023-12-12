@@ -50,6 +50,8 @@ class ShipmentLabelsController extends Controller
     protected $pactic_UserName = 'operation@deluxerie.com'; 
     protected $pactic_Password = 'Deluxerie.2020'; 
 
+	protected $ro_UserName 		= 'bayram.uygur@deluxerie.com'; 
+    protected $ro_Password 		= 'Deluxerie.2020'; 
  
     public function index($order_id)
     {
@@ -92,12 +94,17 @@ class ShipmentLabelsController extends Controller
 				
                 switch($shiping_method){
                     case 'gls':						
-                        $ship_data = $this->getGLSLabels($details_shipment,$_shipment);                       
+                        $ship_data = $this->getGLSLabels($details_shipment,$_shipment); 							
                         break;
-                    case 'gls_hu':		                       				
-                        $ship_data = $this->pacticLabel($details_shipment,$_shipment);                       
+                    case 'gls_return':
+                        $ship_data = $this->getGlsShopReturnLabels($details_shipment,$_shipment); 
                         break;
-                    break;    
+                    case 'gls_hu':	
+						$ship_data = $this->pacticLabel($details_shipment,$_shipment);                       
+                        break;
+					case 'gls_sk':	
+                        $ship_data = $this->pacticLabel($details_shipment,$_shipment,2);                       
+                        break;                       
                     case 'ups':
                         $ship_data = $this->getUpsGBLabels($details_shipment,$_shipment);
                         break;  
@@ -106,7 +113,11 @@ class ShipmentLabelsController extends Controller
                         break;  
                     case 'ppl':
                         $ship_data = $this->pacticLabel($details_shipment,$_shipment,1);
-                        break;         
+                        break;  
+					case 'gls_ro':		                       				
+                        $ship_data = $this->pactic_RO_Label($details_shipment,$_shipment);                       
+                        break;
+                    break;	
                     default:
                         break;
                 }
@@ -124,12 +135,13 @@ class ShipmentLabelsController extends Controller
                       //  $log = new PortalLogs();
                         $res = $log->create($logs);      
                }
-            }
-            
-           
+            }           
 
-            $ship_data['html'] = $this->GenerateHtmlResponse($ship_data,$shiping_method);            
-			$ship_data['basename'] = basename($ship_data['TrackingLink']);           
+            $ship_data['basename'] = basename($ship_data['TrackingLink']);           
+            if($ship_data['is_link'] == 0){
+                $ship_data['basename'] = basename($ship_data['label_pdf']);           
+            }
+            $ship_data['html'] = $this->GenerateHtmlResponse($ship_data,$shiping_method);
             echo json_encode($ship_data);
             die; 
         }
@@ -148,7 +160,10 @@ class ShipmentLabelsController extends Controller
             case 'homerr':
                 $content .= '<div class="result-container"><img src="'.$data['label_pdf'].'" alt="'.$data['TrackingCode'].'"/><span>'.$data['TrackingCode'].'</span></div>';
                 break; 
-            case 'gls_hu':
+            case 'ppl':
+			case 'gls_hu':
+			case 'gls_sk':
+			case 'gls_ro':
                 $content .= '<div class="result-container">
                 <span class="icon" style="position: relative;width: 100%;height: 19rem;text-align: center;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
                 <defs>
@@ -196,7 +211,7 @@ class ShipmentLabelsController extends Controller
                                 "zipCode"           => $customer->postcode,
                                 "houseNumber"       => $customer->address_2,
                                 "addition"          => "",
-                                "street"            => $customer->address_2,
+                                "street"            => $customer->address_1,
                                 "city"              => $customer->city,
                                 "countryName"       => $customer->country,
                                 "phoneNumber"       => $customer->phone,
@@ -234,6 +249,167 @@ class ShipmentLabelsController extends Controller
         return false;                                               
     }
 
+	public function pactic_RO_Label($details_shipment = null,$shipment = null){
+		$shipmentId     = $shipment->id;
+        $customer       = json_decode($details_shipment->customer_details);
+        $address        = new ShipmentAddress();  
+        $address_item   = $address->where('shipment_id',$shipmentId)->first();
+        $requset = array();
+		
+       
+        $requset['flDebug'] 	= "false";
+		$requset['txEmail'] 	= $this->ro_UserName;
+		$requset['txPassword'] 	= $this->ro_Password;
+		$requset['cdLang'] 		= "EN";
+		$requset['flSendWaybill'] = "true";
+        $idCarrier  = 2;
+        $idService  = 1;
+        $reference = $shipment->order_id.'-RR';  
+
+
+		
+		
+		
+        $book = array("dtPickup"  => $address_item->collection_date,
+					  "idCarrier" => $idCarrier,
+					  "idService" => $idService, 
+					  "flBookCheapest" => "false");
+
+        $_order = array( "nmLast" => "Returns",
+                        "nmFirst" => "Deluxerie",
+                        "txPhone" => "+31627082823",
+                        "txEmail" => "return@deluxerie.net"
+                    );  
+                    
+        $quote = array( "ORDERER"                   => array(),
+                        "tyCOD"						=> "",
+                        "nmRecipientCOD"			=> "BTA Online",
+                        "nmBankCOD"					=> 'Revolut Bank UA',
+                        "txBankAccountNumberCOD"	=> 'LT913250054991507606',
+                        "flNothingProhibited"		=> "true",
+                        "flAgreedToTermsAndConditions"	=> "true",
+                        "flInsured"	                => "false",
+                        "flSendWaybill"             =>  "true",
+        );
+
+        $collection	 	= array( "nmCompanyOrPerson" 	=> $address_item->name,
+                                "nmContact" 			=> $address_item->name,
+                                "txPhoneContact" 		=> $address_item->phone_no,
+                                "txEmailContact" 		=> $shipment->order_email,
+                                "txAddress" 			=> $address_item->street,
+                                "txAddressNumber" 	    => $address_item->house_no,
+                                "txPost" 				=> $address_item->post_code,
+                                "txCity"				=> $address_item->city,
+                                "cdCountry" 			=> $address_item->country,                                
+                                "txInstruction" 		=> '',
+                                "cdDropOffPoint" 		=> ''
+                             );
+
+        $invoice  = array("nmCompanyOrPerson" => "BTA Online",
+                       "txAddress" 			=> "Eerste Zeine",
+                       "txAddressNumber"	=> "142",
+                       "txPost"				=> "5144AM",
+                       "txCity"				=> "Waalwijk",
+                       "cdCountry"			=> "NL",
+                       "flCompany"			=> "true",
+                       "nmContact"          => "Ece Eker",
+                       "txPhoneContact"     => "+31627082823",
+                       "txVAT"				=> "NL004275051B52",
+                       "txInvoiceEmail"		=> "operation@deluxerie.com");    
+                       
+        $destination	 = array("nmCompanyOrPerson" 	=> 'Pactic - BTA Online / Deluxerie',
+                                "nmContact" 			=> 'Deluxerie Returns',
+                                "txPhoneContact" 		=> '+31627082823',
+                                "txEmailContact" 		=> 'return@deluxerie.net',
+                                "txAddress" 			=> 'Str. Sântion',
+                                "txAddressNumber" 		=> 'nr.702B',
+                                "txPost" 				=> '417078',
+                                "txCity"				=> 'Sântion',
+                                "cdCountry" 			=> 'RO',
+                                "cdProvince" 			=> 'BH',
+                                "txInstruction" 		=> '',
+                                "cdDropOffPoint" 		=> '');	  
+
+        $packages = array("tyPackage"	    => "PARCEL",
+                            "ctPackage"	    => 1,
+                            "cmWidth"		=> 10,
+                            "cmHeight"	    => 10,
+                            "cmLength"	    => 10,
+                            "gWt"			=> 1000,
+                            "amContent"	    => 1,
+                            "txContent"	    => "Clothing",
+                            "idOrder"		=> $reference); 
+                            
+        $requset['BOOK'] 				                = $book;
+        $requset['QUOTE']		 		                = $quote;
+        $requset['QUOTE']['ORDERER'] 	                = $_order;
+        $requset['QUOTE']['ADDRESSES']['COLLECTION'] 	= $collection;
+        $requset['QUOTE']['ADDRESSES']['DESTINATION'] 	= $destination;
+        $requset['QUOTE']['ADDRESSES']['INVOICE'] 		= $invoice;
+        $requset['QUOTE']['PACKAGES']['PACKAGE'] 		= array($packages);
+       // $requset['QUOTE']['EXTRAS'] 		            = $extras;   
+        $pactic_data =  array('REQUEST' => $requset);
+       // $pacticinfo = $this->getRequest('​​',$pactic_data,'POST');
+
+
+		
+
+        $response   = Http::withHeaders([
+            'Content-Type'  => 'application/json',
+            'Cache-Control' => 'no-cache',                                            
+        ])->send('POST',$this->pactic_Endpoint,['body' => json_encode($pactic_data)]);  
+
+        $res_data = json_decode($response->getBody()->getContents(),true);	
+		
+		
+		
+		
+        $url = config('values.APP_URL');       
+        $response_data = array();                            
+        $_messages =  $res_data['Messages'];
+        if(!empty($_messages)){	
+           $_loginfo =  $_messages[0]['Text'];
+        }elseif($response && $res_data['Quotes'] != null){            
+            $_Waybills = $response['Quotes'][0]['WayBills'];
+            $Waybills  = $_Waybills[0];            
+            $Labels	 = $response['Quotes'][0]['Labels'];
+            $print_label	= '';
+            if(!empty($Labels)){
+                foreach($Labels as $key => $_label){
+                    $pdf_data = base64_decode($_label);
+                    $_name = $shipment->order_id.'-'.time();
+                    $_filename = 'deluxerie-label-'.$_name.'.pdf';                   
+                    $path = public_path().'/labels/'.$_filename;
+                    if(file_exists($path))
+                        unlink($path);	
+                    $pdf = fopen ($path,'w');
+                    fwrite ($pdf,$pdf_data);					
+                    fclose ($pdf);
+                    $print_label =  $url.'/labels/'.$_filename; 
+                    
+                    $pdf_path = public_path().'/labels/'.$_filename;
+                    $note = "Pactic label created with Waybill No: {$Waybills} and  Label ".$path;                    
+                    $label_pdf[] = $print_label;
+                    $response_data['TrackingCode']  = $Waybills;
+                    $response_data['TrackingLink']  = $print_label;   
+                    $response_data['label_pdf']     = $print_label;
+                    $response_data['is_link']       = 0;   
+                    $response_data['is_sent']       = 0;   
+                    $response_data['shipment_id']   = $shipment->id;   
+                    $response_data['label_info']    = 'Pactic Pickup';
+
+                    $log = new PortalLogs();			
+                    $logs = array(  'source_id' => $shipment->id,
+                                    'type'      => '3',
+                                    'note'      => $note);                        
+                    $log->create($logs);
+
+                }	
+            }
+        }
+        return $response_data;
+		
+	}
 
     public function pacticLabel($details_shipment = null,$shipment = null,$ppl = 0){
         $shipmentId     = $shipment->id;
@@ -251,15 +427,21 @@ class ShipmentLabelsController extends Controller
         
         $idCarrier  = 2;
         $idService  = 1;
-
-        if($ppl){
+		$reference = $shipment->order_id.'-RR';
+		$collection_date = date('Y-m-d', strtotime("+1 day"));
+        if($ppl == 1){
             $idCarrier  = 35;
             $idService  = 5;
-        }
+        }elseif($ppl == 2){
+            $idCarrier  = 2;
+            $idService  = 46;
+        }else{
+			$collection_date = $address_item->collection_date;
+		}
 
-        $reference = $shipment->order_id.'-RR'; 
+        
 
-        $book = array("dtPickup"  => $address_item->collection_date,
+        $book = array("dtPickup"  => $collection_date,
 					  "idCarrier" => $idCarrier,
 					  "idService" => $idService, 
 					  "flBookCheapest" => "false");
@@ -280,22 +462,44 @@ class ShipmentLabelsController extends Controller
                         "flInsured"	                => "false",
                         "flSendWaybill"             =>  "true",
         );
-
-        $collection	 	= array( "nmCompanyOrPerson" 	=> $address_item->name,
-                                "nmContact" 			=> $address_item->name,
-                                "txPhoneContact" 		=> $address_item->phone_no,
-                                "txEmailContact" 		=> $shipment->order_email,
-                                "txAddress" 			=> $address_item->street,
-                                "txAddressNumber" 	    => $address_item->house_no,
-                                "txPost" 				=> $address_item->post_code,
-                                "txCity"				=> $address_item->city,
-                                "cdCountry" 			=> $address_item->country,                                
-                                "txInstruction" 		=> '',
-                                "cdDropOffPoint" 		=> ''
-                             );
-
+		
+		
+		if($ppl == 1){
+			// $customer  = json_decode($details_shipment->customer_details);
+			$_houseNo = $customer->address_2;
+			if($_houseNo == '')
+				$_houseNo = '142';
+			
+			$collection	= array( "nmCompanyOrPerson" 		=> $customer->first_name,
+									"nmContact" 			=> $customer->first_name,
+									"txPhoneContact" 		=> $customer->phone,
+									"txEmailContact" 		=> $shipment->order_email,
+									"txAddress" 			=> $customer->address_1,
+									"txAddressNumber" 	    => $_houseNo,
+									"txPost" 				=> $customer->postcode,
+									"txCity"				=> $customer->city,
+									"cdCountry" 			=> $customer->country,                                
+									"txInstruction" 		=> '',
+									"cdDropOffPoint" 		=> ''
+								 );
+					
+			 
+		 }else{
+			$collection	 	= array( "nmCompanyOrPerson" 	=> $address_item->name,
+									"nmContact" 			=> $address_item->name,
+									"txPhoneContact" 		=> $address_item->phone_no,
+									"txEmailContact" 		=> $shipment->order_email,
+									"txAddress" 			=> $address_item->street,
+									"txAddressNumber" 	    => $address_item->house_no,
+									"txPost" 				=> $address_item->post_code,
+									"txCity"				=> $address_item->city,
+									"cdCountry" 			=> $address_item->country,                                
+									"txInstruction" 		=> '',
+									"cdDropOffPoint" 		=> ''
+								 );
+	   }
 	   $invoice_emial = 'operation@deluxerie.com';
-	   if($ppl){
+	   if($ppl == 1){
 		   $invoice_emial = 'payments@deluxerie.com';
 	   }
 	   $invoice  = array("nmCompanyOrPerson" => "BTA Online",
@@ -312,7 +516,7 @@ class ShipmentLabelsController extends Controller
         
 
 				
-		if($ppl){
+		if($ppl == 1){
 			$destination	 = array("nmCompanyOrPerson" 	=> 'BTA Online / Deluxerie',
                                 "nmContact" 			=> 'Deluxerie Returns',
                                 "txPhoneContact" 		=> '+31627082823',
@@ -326,7 +530,21 @@ class ShipmentLabelsController extends Controller
                                 "txInstruction" 		=> "",
                                 "cdDropOffPoint" 		=> "");	  
 
-		}else{		
+		}elseif($ppl == 2){
+			$destination	 = array("nmCompanyOrPerson" 	=> 'BTA Online / Deluxerie',
+                                "nmContact" 			=> 'Deluxerie Returns',
+                                "txPhoneContact" 		=> '+31627082823',
+                                "txEmailContact" 		=> 'return@deluxerie.net',
+                                "txAddress" 			=> 'Depo Budca',
+                                "txAddressNumber" 		=> '1039',
+                                "txPost" 				=> '96233',
+                                "txCity"				=> 'Budca',
+                                "cdCountry" 			=> 'SK',
+                                "cdProvince" 			=> "",
+                                "txInstruction" 		=> "",
+                                "cdDropOffPoint" 		=> "");	  
+
+		}else{	
 			$destination	 = array("nmCompanyOrPerson" 	=> 'BTA Online / Deluxerie',
 									"nmContact" 			=> 'Deluxerie Returns',
 									"txPhoneContact" 		=> '+31627082823',
@@ -369,6 +587,8 @@ class ShipmentLabelsController extends Controller
 	
         $res_data = json_decode($response->getBody()->getContents(),true);	
 		
+		
+	
 		
 
         $url = config('values.APP_URL');     
@@ -503,7 +723,14 @@ class ShipmentLabelsController extends Controller
         $response = Http::withBody(json_encode($gls_params),'application/json')->post($this->GLS_Endpoint);
         $response_data = array();
 		
-		
+		/*if( $shipmentId == '213'){
+			echo "<pre>";
+			print_r($gls_params);
+			print_r($response);
+			echo "</pre>";
+			
+			die;
+		}*/
 		
 				
         if ($response->getStatusCode() == 200) { // 200 OK
@@ -519,6 +746,135 @@ class ShipmentLabelsController extends Controller
             $response_data['label_info']    = 'GLS Pickup';   
         }
         return $response_data;               
+    }
+
+    public function getGlsShopReturnLabels($details_shipment = null,$shipment = null){
+        $shipmentId = $shipment->id;
+        $customer  = json_decode($details_shipment->customer_details);
+        $address = new ShipmentAddress();  
+        $address_item = $address->where('shipment_id',$shipmentId)->first(); 
+        $order_country 	= $address_item->country;
+		$country 		= strtolower($order_country);        
+        $LineItems = new ShipmentItems();  
+        $Line_Items = $LineItems->where('shipment_id',$shipmentId)->get(); 
+
+        
+        if(empty($address_item) || empty($Line_Items))
+            return false;
+
+        $requesterAddress = array(  'name1'             => 'BTA Online',
+                                    'name2'             => 'Deluxerie',
+                                    'name3'             => '',
+                                    'street'            => 'Eerste Zeine',
+                                    'houseNo'           => '142',
+                                    'houseNoExt'        => '',
+                                    'zipCode'           => '5144AM',
+                                    'city'              => 'Waalwijk',
+                                    'countryCode'       => 'NL',
+                                    'contact'           => 'Deluxerie Returns',
+                                    'phone'             => '31627082823',
+                                    'email'             => 'operation@deluxerie.com');
+        
+        $deliveryAddress = array(  'addresseeType'      => 'B',
+                                    'name1'             => 'BTA Online',
+                                    'name2'             => 'Deluxerie',
+                                    'name3'             => '',
+                                    'street'            => 'Wijnruitstraat',
+                                    'houseNo'           => '4',
+                                    'houseNoExt'        => '',
+                                    'zipCode'           => '5143AJ',
+                                    'city'              => 'Waalwijk',
+                                    'countryCode'       => 'NL',
+                                    'contact'           => 'Deluxerie Returns',
+                                    'phone'             => '31627082823',
+                                    'email'             => 'operation@deluxerie.com');        
+
+        $pickupAddress = array(     'name1'             => $address_item->name,
+                                    'name2'             => '',
+                                    'name3'             => '',
+                                    'street'            => $address_item->street,
+                                    'houseNo'           => $address_item->house_no,
+                                    'houseNoExt'        => $address_item->extension,
+                                    'zipCode'           => $address_item->post_code,
+                                    'city'              => $address_item->city,
+                                    'countryCode'       => $address_item->country,
+                                    'contact'           => $address_item->name,
+                                    'phone'             => $address_item->phone_no,
+                                    'email'             => $shipment->order_email);                            
+      
+        $gls_address   = array( 'requesterAddress'      => $requesterAddress,
+                                'pickupAddress'         => $pickupAddress,
+                                'deliveryAddress'       => $deliveryAddress);
+
+        $units          = array();
+         //foreach($Line_Items as $key => $line_itm){
+           
+            $units[] = array("unitId"               => "Deluxerie Return - ".$shipment->order_id,
+                            "unitType"              => "CO",
+                            "customerUnitReference" => $shipment->order_id."-RR",
+                            "weight"                => "0.5",
+                            "additionalInfo1"       => "",
+                            "additionalInfo2"       => "");
+
+        //}  
+
+        $gls_params     = array("trackingLinkType"      => 'S',
+                                "labelType"             => "pdf",
+                                //"labelA4StartPosition"  => 0,
+                                //"labelA4MoveXMm"        => 0,
+                                //"labelA4MoveYMm"        => 0,
+                                //"pickupDate"            => $address_item->collection_date,
+                                "addresses"             => $gls_address,
+                                "sendLabelsByEmail"     => true,
+                                "customerNo"            => '51430014',
+                                "customerSubjectName"   => "",
+                                "reference"             => $shipment->order_id."-RR", 
+                                "units"                 => $units,  
+                                "shippingSystemName"    => "",                                
+                                "shippingSystemVersion" => "",
+                                "shiptype"              =>  "P",
+                                "username"              => $this->GLS_UserName,
+                                "password"              => $this->GLS_Password);
+
+        $headers = array('Content-Type'                 => 'application/json',
+                         'Ocp-Apim-Subscription-Key'    => 'd3b8ee2b579f4786b6dab4709514a442');                        
+                         
+        $response = Http::withHeaders($headers)->withBody(json_encode($gls_params),'application/json')->post('https://api.gls.nl/V1/api/ShopReturn/Create?api-version=1.0');
+
+        $response_data = array();
+        if ($response->getStatusCode() == 200) { // 200 OK
+
+           // echo $response->getBody()->getContents();
+            
+            $res_data   = json_decode($response->getBody()->getContents(),true); 
+            $is_link    = 1;
+            $print_label    = '';
+            $url        = config('values.APP_URL');
+            if(isset($res_data['units'][0]['labelShopReturn']) && $res_data['units'][0]['labelShopReturn'] != ''){
+                $_label = $res_data['units'][0]['labelShopReturn'];  
+
+                $pdf_data = base64_decode($_label);
+                $_name = $shipment->order_id.'-'.time();
+                $_filename = 'deluxerie-label-'.$_name.'.pdf';                   
+                $path = public_path().'/labels/'.$_filename;
+                if(file_exists($path))
+                    unlink($path);	
+                $pdf = fopen ($path,'w');
+                fwrite ($pdf,$pdf_data);					
+                fclose ($pdf);
+                $print_label =  $url.'/labels/'.$_filename; 
+                $is_link    = 0;
+            }
+            $response_data['TrackingCode']  = $res_data['units'][0]['unitNoShopReturn'];
+            $response_data['TrackingLink']  = $res_data['shipmentTrackingLink'];   
+            $response_data['label_pdf']     = $print_label;
+            $response_data['labels']        = $_label;
+            $response_data['is_link']       = $is_link;   
+            $response_data['is_sent']       = 0;   
+            $response_data['shipment_id']   = $shipment->id;   
+            $response_data['label_info']    = 'GLS Shop Return';   
+        }
+        return $response_data;                
     }
 	
 	public function getUpsGBLabels($details_shipment = null,$_shipment = 0){

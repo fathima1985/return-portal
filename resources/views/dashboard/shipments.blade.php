@@ -128,7 +128,7 @@
                         @elseif($shipment['status'] == 4)
 							<span class="badge badge-sm  text-xxs bg-gradient-warning">On Hold</span>  
                         @elseif($shipment['status'] == 5)
-							<span class="badge badge-sm text-xxs bg-gradient-danger">Approved</span>
+							<span class="badge badge-sm text-xxs bg-gradient-danger">Rejected</span>
                        @elseif($shipment['status'] == 1)
 							<span class="badge badge-sm text-xxs bg-gradient-info">Waiting Action</span>
 						@endif 
@@ -179,7 +179,10 @@
                     @endif
                   </tbody>
                 </table>
-				<div class="pagination">{!!$paginate!!}</div>
+				<div class="pagination">	
+					{{ $paginate->onEachSide(1)->links() }} 
+					
+				</div>
               </div>
             </div>
           </div>

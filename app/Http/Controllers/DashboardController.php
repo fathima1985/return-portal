@@ -227,6 +227,8 @@ class DashboardController extends Controller
         $users = User::all();
 
         $type = isset($_GET['type']) ? $_GET['type'] : '';
+		
+		//dd($paginate);
 
         return view('dashboard.shipments',compact('data','shipments','paginate','filterdata','users','type'));
     }
@@ -245,7 +247,9 @@ class DashboardController extends Controller
                                 "64" =>	"deluxerie.fi",
                                 "74" =>	"deluxerie.pt",
                                 "46" =>	"deluxerie.cz",
-                                "44" =>	"deluxerie.hu");
+                                "44" =>	"deluxerie.hu",
+								"53" =>	"deluxerie.ro",
+								"56" =>	"deluxerie.sk");
 
         $data['shipment_status'] = array(0 => 'New Requests',
                                          1 => 'Waiting Action',
@@ -267,17 +271,23 @@ class DashboardController extends Controller
                                         2 => 'Store Credit',
                                         3 => 'Refund Deduction');                                 
 
-        $data['shipping'] = array('homerr' 	=> array('name' 		=> 'HOMERR',
+        $data['shipping'] = array('homerr' 	    => array('name' 	=> 'HOMERR',
                                                     'icon'			=> 'Homerr-Logo.png'),
-                                    'ups' 	=> array('name' 	    => 'UPS',
+                                    'ups' 	    => array('name' 	=> 'UPS',
                                                     'icon'			=> 'UPS-logo.png'),	
-                                    'gls' 	=> array('name' 		=> 'GLS',
+                                    'gls' 	    => array('name' 	=> 'GLS NL - Pick&Return',
                                                     'icon'			=> 'GLS_Logo.png'),
-									'gls_hu' 	=> array('name' 	=> 'GLS HU',
+									'gls_hu' 	=> array('name' 	=> 'Pactic - GLS HU',
                                                     'icon'			=> 'GLS_Logo.png'),
-                                    'ppl' 	=> array('name' 		=> 'PPL',
+                                    'gls_return'=> array('name' 	=> 'GLS NL - ShopReturn',
+                                                    'icon'			=> 'GLS_Logo.png'),
+									'gls_ro' 	=> array('name' 	=> 'Pactic - GLS RO',
+                                                    'icon'			=> 'GLS_Logo.png'),				
+									'gls_sk' 	=> array('name' 	=> 'Pactic - GLS SK',
+                                                    'icon'			=> 'GLS_Logo.png'),								
+                                    'ppl' 	    => array('name' 	=> 'Pactic - PPL CZ',
                                                     'icon'			=> 'ppl-logo.png'),
-                                    'own' 	=> array('name' 		=> 'Other - At my own expense',
+                                    'own' 	    => array('name' 	=> 'Other',
                                                     'icon'			=> ''));
 
                                      
@@ -292,7 +302,7 @@ class DashboardController extends Controller
         $data       =   $this->returnFilters();
         $shipment   =   Shipments::find($shipment_id);
         $details    =   ShipmentDetails::where('shipment_id',$shipment_id)->first();
-
+		$pickup 	=  array("_gls","gls","gls_hu","gls_ro","gls_sk");
         
         if(empty($details))
 			return Redirect::to('/dashboard/');
@@ -307,6 +317,9 @@ class DashboardController extends Controller
 					  ->select(['portal_logs.*','users.name','users.email'])->get();
 
         $users = User::all();              
+		
+		
+		$data['pickup']		= (in_array($details->shiping_method,$pickup) !== false) ? 1 : 0;
 		
         $assgiend = UserTasks::where('shipment_id',$shipment_id)
                     ->leftjoin('users','user_tasks.user_id','=','users.id')

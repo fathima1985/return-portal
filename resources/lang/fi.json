@@ -145,5 +145,20 @@
    "return_success_content":"Palautuspyyntö on jo luotu tilaustunnuksella {order_id}",
    "return_exist_title":"Odota meille jonkin aikaa palautuksesi käsittelyyn.",
    "return_exist_content":"Palautuspyyntö on jo luotu arvolla {order_id}",
-   "return_exist_footer":"Palautuspyyntö on jo luotu arvolla {order_id}"
+   "return_exist_footer":"Palautuspyyntö on jo luotu arvolla {order_id}",
+   "thanks_gls_hu":"Olemme vastaanottaneet palautuspyyntösi ja paketin noutotiedot.\n\t\t\t\t\t\t\tNoutotiedot on lähetetty GLS-järjestelmään. GLS:n kuljettaja saapuu annettuun osoitteeseen valittuna päivänä noutoa varten. \n\t\t\t\t\t\t\tPalautuksen tiedot lähetetään sinulle sähköpostitse. Tarkista roskapostilaatikkosi, jos et ole saanut sitä.",
+   "email_thanks_gls_hu_title":"Palautuspyyntö",
+   "email_thanks_gls_hu_subject":"Deluxerie-tilauksesi palautuspyyntö",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Hyvä asiakas,<\/span><br\/><span style='color: #000000;'>Olemme vastaanottaneet palautuspyyntösi.<br\/></span><span style='color: #000000;'>Voit ladata palautuslähetystarran klikkaamalla alla olevaa painiketta.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"Älä epäröi ottaa yhteyttä Deluxerien asiakaspalveluun, jos tarvitset apua.",
+   "email_thanks_gls_hu_button":"KLIKKAA TÄSTÄ LATAAKSESI TOIMITUSETIKETTISI",
+   "order_return_exceed":"Tilauksesi ei ole oikeutettu palautukseen, koska se on ylittänyt <a href='#' target='_blank'>palautuskäytäntömme</a> mukaisen 30 päivän palautus- tai vaihtoajan.",
+   "gls_return":"GLS - ParcelShop",
+   "gls_return_instruction":"Voit jättää palautuspakettisi lähimpään GLS ParcelShopiin.<br/>GLS-palautuksia varten toimitetaan PDF toimitustarra, joten tomitustarra on tulostettava",   
+   "thanks_gls_return":"Olemme vastaanottaneet palautuspyyntösi.\n\t\t\t\t\t\t\tVoit ladata palautuslähetystarran klikkaamalla alla olevaa painiketta.\n\t\t\t\t\t\t\tPalautuksen tiedot lähetetään sinulle sähköpostitse. Tarkista roskapostilaatikkosi, jos et ole saanut sitä.",
+   "email_thanks_gls_return_title":"Palautuspyyntö",
+   "email_thanks_gls_return_subject":"Deluxerie-tilauksesi palautuspyyntö",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Hyvä asiakas,<\/span><br\/><span style='color: #000000;'>Olemme vastaanottaneet palautuspyyntösi.<br\/></span><span style='color: #000000;'>Voit ladata palautuslähetystarran klikkaamalla alla olevaa painiketta.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Älä epäröi ottaa yhteyttä Deluxerien asiakaspalveluun, jos tarvitset apua.",
+   "email_thanks_gls_return_button":"KLIKKAA TÄSTÄ LATAAKSESI TOIMITUSETIKETTISI"
 }

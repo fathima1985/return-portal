@@ -51,7 +51,7 @@
    "yes":"Yes",
    "no":"No",
    "amount_paid":"Amount Paid",
-   "sku":"Product Code:",
+   "sku":"Product Code",
    "click_here_to_return_this_product":"Click here to return this product",
    "cancel_return":"Cancel",
    "select_return_type":"Please select return type",
@@ -153,5 +153,14 @@
    "email_thanks_gls_hu_subject":"Return Request for your Deluxerie Order",
    "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Dear customer,<\/span><br\/><span style='color: #000000;'>We have received your return request.<br\/></span><span style='color: #000000;'>You can download your return shipment label by the clicking the button below.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
    "email_thanks_gls_hu_footer":"Please do not hesitate to contact Deluxerie Customer Service if you need any assistance.",
-   "email_thanks_gls_hu_button":"CLICK HERE TO DOWNLOAD YOUR SHIPPING LABEL"
+   "email_thanks_gls_hu_button":"CLICK HERE TO DOWNLOAD YOUR SHIPPING LABEL",
+   "order_return_exceed":"Your order is not eligible for return as it has exceeded the 30 days return or replace as per our <a href='#' target='_blank'>return policy</a>.",
+   "gls_return":"GLS - ShopReturn",
+   "gls_return_instruction":"You can drop-off your return package to the nearest GLS ParcelShop.<br/>A PDF shipping label will be provided for the GLS returns, so printing the shipping label is required.",   
+   "thanks_gls_return":"We have received your return request.\n\t\t\t\t\t\t\tYou can download your return shipment label by the clicking the button below.\n\t\t\t\t\t\t\tYour return details also will be sent as an e-mail to you. Please check your spam-box in case that you didn't received.",
+   "email_thanks_gls_return_title":"Return Request",
+   "email_thanks_gls_return_subject":"Return Request for your Deluxerie Order",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Dear customer,<\/span><br\/><span style='color: #000000;'>We have received your return request.<br\/></span><span style='color: #000000;'>You can download your return shipment label by the clicking the button below.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Please do not hesitate to contact Deluxerie Customer Service if you need any assistance.",
+   "email_thanks_gls_return_button":"CLICK HERE TO DOWNLOAD YOUR SHIPPING LABEL"
 }

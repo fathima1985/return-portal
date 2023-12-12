@@ -55,8 +55,9 @@ return [
     | your application so that it is used when running Artisan tasks.
     |
     */
+	'log' => 'daily',
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://return.deluxerie.net'),
 
     'asset_url' => env('ASSET_URL', null),
 

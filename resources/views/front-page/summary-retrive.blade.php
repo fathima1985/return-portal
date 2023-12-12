@@ -76,7 +76,12 @@
 											<p class="product-sku"><span>{!!$lang['sku']!!}:</span>{!!$order['sku']!!}</p>
 											@if(!empty($order['attributes']))
 												@foreach($order['attributes'] as $akey => $attr)
-												<p class="attributes product-{{$attr['object']['taxonomy']}}"><span>{{$attr['label']}}:</span>{!!$attr['object']['name']!!}</p>
+													@if(!empty($attr) && !empty($attr['object']))
+														<p class="attributes product-{{$attr['object']['taxonomy']}}">
+															<span>{{$attr['label']}}:</span>
+															{!!$attr['object']['name']!!}
+														</p>
+													@endif	
 												@endforeach
 											@endif
 											<p class="product-ampunt"><span>{!!$lang['amount_paid']!!}:</span>{!!$orders['currency_symbol']!!} {!!number_format(($order['total_tax'] + $order['total']),2)!!} </p>
@@ -116,7 +121,7 @@
 									</div>
 									@endforeach
 								</div>
-								<div class="gls-wrapper" @if($ship_details['shiping_method'] == 'gls' || $ship_details['shiping_method'] == 'gls_hu' || $ship_details['shiping_method'] == 'ppl') style="display:block" @else style="display:none"  @endif>
+								<div class="gls-wrapper" @if($is_pickup) style="display:block" @else style="display:none"  @endif>
 									<h3 class="text-center mt-4 mb-5">{!!$lang['packgae_form_instruction']!!}</h3>
 									<div class="error-message alert alert-danger mt-5 mb-5" role="alert" style="display:none"></div>					
 									<div class="shipping-field row pb-3">
@@ -141,10 +146,10 @@
 													@endphp
 												@endif			
 												@if($_value['type'] == 'date')
-												<input type="text" name="{{$key}}" class="datepicker form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  onfocus="focused(this)" onfocusout="defocused(this)" @if(isset($_value['readonly'])) readonly @endif/>
+												<input type="text" name="{{$key}}" class="datepicker form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  onfocus="focused(this)" onfocusout="defocused(this)" @if(isset($_value['readonly'])) readonly @endif @if(isset($_value['maxLength']))maxlength="{{$_value['maxLength']}}" @endif/>
 												
 												@else
-													<input type="{{$_value['type']}}" name="{{$key}}" class="form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}" @if(isset($_value['readonly'])) readonly @endif />
+													<input type="{{$_value['type']}}" name="{{$key}}" class="form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}" @if(isset($_value['readonly'])) readonly @endif @if(isset($_value['maxLength']))maxlength="{{$_value['maxLength']}}" @endif/>
 												@endif
 											</div>
 										@endforeach

@@ -153,5 +153,14 @@
    "email_thanks_gls_hu_subject":"Visszaküldési kérelem a Deluxerie-rendeléshez",
    "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Kedves vásárlónk,<\/span><br\/><span style='color: #000000;'>Megkaptuk a visszaküldési kérelmed és a csomagfelvételi adatokat.<br\/></span><span style='color: #000000;'>A felvételi adatokat elküldtük a GLS rendszerébe. A GLS futárja a megadott címre érkezik a kiválasztott időpontban az átvételhez.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
    "email_thanks_gls_hu_footer":"Kérjük, ne habozz, fordulj a Deluxerie ügyfélszolgálatához, ha segítségre van szükséged.",
-   "email_thanks_gls_hu_button":"KATTINTS IDE A SZÁLLÍTÁSI CÍMKE LETÖLTÉSÉHEZ"
+   "email_thanks_gls_hu_button":"KATTINTS IDE A SZÁLLÍTÁSI CÍMKE LETÖLTÉSÉHEZ",
+   "order_return_exceed":"Megrendelése nem jogosult visszaküldésre, mivel túllépte a 30 napos visszaküldési vagy kicserélési határidőt a <a href='#' target='_blank'>visszaküldési szabályzatunk szerint</a>.",
+   "gls_return":"GLS - ParcelShop",
+   "gls_return_instruction":"A visszatérítendő csomagot a legközelebbi GLS ParcelShop-ban adhatod le.<br/>A GLS visszárukhoz PDF formátumú szállítási címkét biztosítunk, ezért a szállítási címke kinyomtatása szükséges.",   
+   "thanks_gls_return":"Visszaküldési kérelmed megkaptuk.\n\t\t\t\t\t\t\tAz alábbi gombra kattintva letöltheted a visszaküldési címkét.\n\t\t\t\t\t\t\tA visszaküldés részleteit e-mailben is elküldjük. Kérjük, ellenőrizd a spam mappát, ha esetleg nem kaptad volna meg.",
+   "email_thanks_gls_return_title":"Visszaküldési kérelem",
+   "email_thanks_gls_return_subject":"Visszaküldési kérelem a Deluxerie-rendeléshez",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Dear customer,<\/span><br\/><span style='color: #000000;'>Visszaküldési kérelmed megkaptuk.<br\/></span><span style='color: #000000;'>Az alábbi gombra kattintva letöltheted a visszaküldési címkét.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Kérjük, ne habozz, fordulj a Deluxerie ügyfélszolgálatához, ha segítségre van szükséged.",
+   "email_thanks_gls_return_button":"KATTINTS IDE A SZÁLLÍTÁSI CÍMKE LETÖLTÉSÉHEZ"
 }

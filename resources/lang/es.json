@@ -145,5 +145,20 @@
    "return_success_content":"Ya se ha creado una solicitud de devolución con el ID de pedido {order_id}",
    "return_exist_title":"Permítanos algo de tiempo para procesar su devolución.",
    "return_exist_content":"Ya se ha creado una solicitud de devolución con {order_id}",
-   "return_exist_footer":"Ya se ha creado una solicitud de devolución con {order_id}"
+   "return_exist_footer":"Ya se ha creado una solicitud de devolución con {order_id}",
+   "thanks_gls_hu":"Hemos recibido su solicitud de devolución y los datos de recogida del paquete.\n\t\t\t\t\t\t\tLos datos de recogida se han enviado al sistema GLS. Un conductor de GLS acudirá a la dirección indicada en la fecha elegida para la recogida. \n\t\t\t\t\t\t\tLos detalles de la devolución se le enviarán por correo electrónico. Por favor, compruebe su bandeja de correo no deseado en caso de que no lo haya recibido.",
+   "email_thanks_gls_hu_title":"Solicitud de devolución",
+   "email_thanks_gls_hu_subject":"Solicitud de devolución de su pedido Deluxerie",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Estimado cliente,<\/span><br\/><span style='color: #000000;'>Hemos recibido su solicitud de devolución.<br\/></span><span style='color: #000000;'>Puede descargar la etiqueta de devolución haciendo clic en el botón de abajo.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"No dude en ponerse en contacto con el servicio de atención al cliente de Deluxerie si necesita ayuda.",
+   "email_thanks_gls_hu_button":"HAGA CLIC AQUÍ PARA DESCARGAR SU ETIQUETA DE ENVÍO",
+   "order_return_exceed":"Su pedido no es elegible para devolución ya que excedió los 30 días de devolución o reemplazo según nuestra <a href='#' target='_blank'>Política de devoluciones</a>.",
+   "gls_return":"GLS - ParcelShop",
+   "gls_return_instruction":"Puede depositar su paquete de devolución en la GLS ParcelShop más cercana.<br/>Se proporcionará una etiqueta de envío en PDF para las devoluciones de GLS, por lo que es necesario imprimir la etiqueta de envío",   
+   "thanks_gls_return":"Hemos recibido su solicitud de devolución.\n\t\t\t\t\t\t\tPuede descargar la etiqueta de devolución haciendo clic en el botón de abajo.\n\t\t\t\t\t\t\tLos detalles de la devolución se le enviarán por correo electrónico. Por favor, compruebe su bandeja de correo no deseado en caso de que no lo haya recibido.",
+   "email_thanks_gls_return_title":"Solicitud de devolución",
+   "email_thanks_gls_return_subject":"Solicitud de devolución de su pedido Deluxerie",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Estimado cliente,<\/span><br\/><span style='color: #000000;'>Hemos recibido su solicitud de devolución.<br\/></span><span style='color: #000000;'>Puede descargar la etiqueta de devolución haciendo clic en el botón de abajo.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"No dude en ponerse en contacto con el servicio de atención al cliente de Deluxerie si necesita ayuda.",
+   "email_thanks_gls_return_button":"HAGA CLIC AQUÍ PARA DESCARGAR SU ETIQUETA DE ENVÍO"
 }

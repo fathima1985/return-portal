@@ -147,5 +147,21 @@
    "return_success_content":"Er is al een retouraanvraag aangemaakt met het bestelnummer {order_id}",
    "return_exist_title":"Geef ons even de tijd om je retourzending te verwerken.",
    "return_exist_content":"Er is al een retourverzoek aangemaakt met de {order_id}",
-   "return_exist_footer":"Er is al een retourverzoek aangemaakt met de {order_id}"
+   "return_exist_footer":"Er is al een retourverzoek aangemaakt met de {order_id}",
+  "email_status_button":"KLIK HIER OM UW VERZENDLABEL TE DOWNLOADEN",
+   "thanks_gls_hu":"We hebben uw retouraanvraag en ophaalgegevens ontvangen.\n\t\t\t\t\t\t\tDe ophaalgegevens zijn naar het GLS-systeem verzonden. Een chauffeur van GLS zal op de gekozen afhaaldatum naar het opgegeven adres komen. \n\t\t\t\t\t\t\tUw retourgegevens worden ook als e-mail naar u verzonden. Controleer uw spam-box voor het geval u niets heeft ontvangen.",
+   "email_thanks_gls_hu_title":"Uw retouraanvraag",
+   "email_thanks_gls_hu_subject":"Retouraanvraag voor uw Deluxerie Bestelling",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Beste klant,<\/span><br\/><span style='color: #000000;'>We hebben uw retourverzoek ontvangen.<br\/></span><span style='color: #000000;'>U kunt uw retourlabel downloaden door op onderstaande knop te klikken.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"Aarzel niet om contact op te nemen met de klantenservice van Deluxerie als u hulp nodig heeft.",
+   "email_thanks_gls_hu_button":"KLIK HIER OM UW VERZENDLABEL TE DOWNLOADEN",
+   "order_return_exceed":"Uw bestelling komt niet in aanmerking voor retournering omdat deze de retour- of vervangingstermijn van 30 dagen heeft overschreden volgens ons <a href='#' target='_blank'>retourbeleid</a>.",
+   "gls_return":"GLS - ParcelShop",
+   "gls_return_instruction":"U kunt uw retourpakket afgeven bij de dichtstbijzijnde GLS ParcelShop.<br/>Er wordt een PDF-verzendlabel verstrekt voor de GLS-retouren, dus het is wel vereist om het verzendlabel af te drukken.",   
+   "thanks_gls_return":"We hebben uw retourverzoek ontvangen.\n\t\t\t\t\t\t\tU kunt uw retourlabel downloaden door op onderstaande knop te klikken.\n\t\t\t\t\t\t\tUw retourgegevens worden ook als e-mail naar u verzonden. Controleer uw spam-box voor het geval u niets heeft ontvangen.",
+   "email_thanks_gls_return_title":"Uw retouraanvraag",
+   "email_thanks_gls_return_subject":"Retouraanvraag voor uw Deluxerie Bestelling",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Beste klant,<\/span><br\/><span style='color: #000000;'>We hebben uw retourverzoek ontvangen.<br\/></span><span style='color: #000000;'>U kunt uw retourlabel downloaden door op onderstaande knop te klikken.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Aarzel niet om contact op te nemen met de klantenservice van Deluxerie als u hulp nodig heeft.",
+   "email_thanks_gls_return_button":"KLIK HIER OM UW VERZENDLABEL TE DOWNLOADEN"
 }

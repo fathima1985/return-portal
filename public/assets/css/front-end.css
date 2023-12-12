@@ -315,6 +315,10 @@ h1,h2,h3{
 	font-size:17px;
 	margin-bottom:0px;
 }
+.result-section .product-item  p.product-undefined{
+	display:none;
+}
+	
 .result-section .product-item  p span{
 	font-weight:600;
 	padding-right:0.5rem;
@@ -340,10 +344,6 @@ h1,h2,h3{
 .shipping-list .form-group label  img{
 	max-height: 30px;	
 }
-.shipping-list .form-group.shipping-ppl label  img{
-	max-height: 50px;	
-}
-
 .shipping-list .form-group label{
 	position: relative;
 	font-weight: 600;
@@ -505,6 +505,11 @@ h1,h2,h3{
 .modal-content .border-bottom{
 	border-bottom: 1px solid #8E0045 !important;
 	
+}
+.alert > a{
+	color: #FFF;
+    text-decoration: underline;
+    font-weight: bold;
 }
 @media screen and (max-width: 1023px){
 	html{

@@ -145,5 +145,20 @@
    "return_success_content":"Der er allerede oprettet en returanmodning med ordre-id'et {order_id}",
    "return_exist_title":"Giv os venligst lidt tid til at behandle din returnering.",
    "return_exist_content":"Der er allerede oprettet en returanmodning med {order_id}",
-   "return_exist_footer":"Der er allerede oprettet en returanmodning med {order_id}"
+   "return_exist_footer":"Der er allerede oprettet en returanmodning med {order_id}",
+   "thanks_gls_hu":"Vi har modtaget din returanmodning og oplysninger om pakkeafhentning.\n\t\t\t\t\t\t\tAfhentningsoplysninger er sendt til GLS-systemet. En chauffør fra GLS kommer til den angivne adresse på den valgte dato for afhentningen. \n\t\t\t\t\t\t\tDine returoplysninger vil også blive sendt som en e-mail til dig. Tjek venligst din spamboks, hvis du ikke har modtaget noget i din indbakke.",
+   "email_thanks_gls_hu_title":"Returneringsanmodning",
+   "email_thanks_gls_hu_subject":"Returneringsanmodning for din Deluxerie ordre",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Kære kunde,<\/span><br\/><span style='color: #000000;'>Vi har modtaget din returanmodning.<br\/></span><span style='color: #000000;'>Du kan downloade din returforsendelsesetiket ved at klikke på knappen nedenfor.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"Tøv ikke med at kontakte Deluxerie kundeservice, hvis du har brug for hjælp.",
+   "email_thanks_gls_hu_button":"KLIK HER FOR AT DOWNLOAD DIN FORSENDINGSETIKET",
+   "order_return_exceed":"Din ordre er ikke berettiget til returnering, da den har overskredet 30 dages returnering eller erstatning i henhold til vores <a href='#' target='_blank'>returpolitik</a>.",
+   "gls_return":"GLS - PakkeShop",
+   "gls_return_instruction":"Du kan aflevere din returpakke i den nærmeste GLS ParcelShop.<br/>Der vil blive leveret en PDF-forsendelsesetiket til PPL-retur, så forsendelsesetiketten skal udskrives.",   
+   "thanks_gls_return":"Vi har modtaget din returanmodning.\n\t\t\t\t\t\t\tDu kan downloade din returforsendelsesetiket ved at klikke på knappen nedenfor.\n\t\t\t\t\t\t\tDine returoplysninger vil også blive sendt som en e-mail til dig. Tjek venligst din spamboks, hvis du ikke har modtaget noget i din indbakke.",
+   "email_thanks_gls_return_title":"Returneringsanmodning",
+   "email_thanks_gls_return_subject":"Returneringsanmodning for din Deluxerie ordre",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Kære kunde,<\/span><br\/><span style='color: #000000;'>Vi har modtaget din returanmodning.<br\/></span><span style='color: #000000;'>Du kan downloade din returforsendelsesetiket ved at klikke på knappen nedenfor.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Tøv ikke med at kontakte Deluxerie kundeservice, hvis du har brug for hjælp.",
+   "email_thanks_gls_return_button":"KLIK HER FOR AT DOWNLOAD DIN FORSENDINGSETIKET"
 }

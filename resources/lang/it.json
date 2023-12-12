@@ -145,5 +145,20 @@
    "return_success_content":"È già stata creata una richiesta di reso con ID ordine {order_id}",
    "return_exist_title":"Ti preghiamo di concederci un po' di tempo per elaborare il tuo reso.",
    "return_exist_content":"È già stata creata una richiesta di reso con {order_id}",
-   "return_exist_footer":"È già stata creata una richiesta di reso con {order_id}"
+   "return_exist_footer":"È già stata creata una richiesta di reso con {order_id}",
+   "thanks_gls_hu":"Abbiamo ricevuto la tua richiesta di reso e i dettagli per il ritiro del pacco.\n\t\t\t\t\t\t\tI dettagli del ritiro sono stati inviati al sistema GLS. Un autista della GLS verrà all'indirizzo fornito nella data scelta per il ritiro. \n\t\t\t\t\t\t\tAnche i dettagli del reso ti verranno inviati tramite e-mail. Controlla la tua casella di posta indesiderata nel caso in cui non l'avessi ricevuta.",
+   "email_thanks_gls_hu_title":"Richiesta di reso",
+   "email_thanks_gls_hu_subject":"Richiesta di reso per il tuo ordine Deluxerie",
+   "email_thanks_gls_hu_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Gentile Cliente,<\/span><br\/><span style='color: #000000;'>Abbiamo ricevuto la tua richiesta di reso.<br\/></span><span style='color: #000000;'>Puoi scaricare l'etichetta di spedizione del reso facendo clic sul pulsante in basso.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_hu_footer":"Non esitare a contattare il servizio clienti Deluxerie se hai bisogno di assistenza.",
+   "email_thanks_gls_hu_button":"CLICCA QUI PER SCARICARE L'ETICHETTA DI SPEDIZIONE",
+   "order_return_exceed":"Il tuo ordine non è idoneo alla restituzione poiché ha superato i 30 giorni di restituzione o sostituzione secondo la nostra <a href='#' target='_blank'>Politica di restituzione</a>.",
+   "gls_return":"GLS - ParcelShop",
+   "gls_return_instruction":"Puoi lasciare il tuo pacco di reso al GLS ParcelShop più vicino.<br/>Verrà fornita un'etichetta di spedizione in formato PDF per i resi GLS, quindi è necessario stampare l'etichetta di spedizione.",   
+   "thanks_gls_return":"Abbiamo ricevuto la tua richiesta di reso.\n\t\t\t\t\t\t\tPuoi scaricare l'etichetta di spedizione del reso facendo clic sul pulsante in basso.\n\t\t\t\t\t\t\tAnche i dettagli del reso ti verranno inviati tramite e-mail. Controlla la tua casella di posta indesiderata nel caso in cui non l'avessi ricevuta.",
+   "email_thanks_gls_return_title":"Richiesta di reso",
+   "email_thanks_gls_return_subject":"Richiesta di reso per il tuo ordine Deluxerie",
+   "email_thanks_gls_return_body":"<p style='margin: 0;text-align:center'><span style='color: #000000;'>Gentile Cliente,<\/span><br\/><span style='color: #000000;'>Abbiamo ricevuto la tua richiesta di reso.<br\/></span><span style='color: #000000;'>Puoi scaricare l'etichetta di spedizione del reso facendo clic sul pulsante in basso.<\/span><\/p><br\/><p style='margin: 0;text-align:center'><span style='color: #000000;'><\/p>",
+   "email_thanks_gls_return_footer":"Non esitare a contattare il servizio clienti Deluxerie se hai bisogno di assistenza.",
+   "email_thanks_gls_return_button":"CLICCA QUI PER SCARICARE L'ETICHETTA DI SPEDIZIONE"
 }

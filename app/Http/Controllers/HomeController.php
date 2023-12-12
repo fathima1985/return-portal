@@ -6,9 +6,9 @@ use Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-
+use Carbon\Carbon;
 use Session;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\Shipments;
 use App\Models\ShipmentDetails;
 use App\Models\ShipmentAddress;
@@ -134,7 +134,8 @@ class HomeController extends Controller
 						 'cz' 	=> 'čeština',
 						 'hu' 	=> 'Magyar',
 						 'tr' 	=> 'Turkish',						 
-						 'ro' 	=> 'Română');
+						 'ro' 	=> 'Română',
+						 'sk'	=> 'Slovak');
 						 
 		if(isset($country[$langCode])){				 
 			$selected	=  $country[$langCode];
@@ -205,28 +206,36 @@ class HomeController extends Controller
 														'required' => 1),	
 							'name_surname' 		=> array('label' => isset($lang['name_surname']) ? $lang['name_surname'] : 'Name & Surname',
 														'type' => 'text',
+														'maxLength' => 30,
 														'required' => 1),
 							'country' 			=> array('label' => isset($lang['country']) ? $lang['country'] : 'Country',
 														'type' => 'text',
 														'readonly' => 1,	
+														'maxLength' => 2,
 														'required' => 1),
 							'post_code' 		=> array('label' => isset($lang['zipcode']) ? $lang['zipcode'] : 'ZIP/Post Code',
 														'type' => 'text',
+														'maxLength' => 8,
 														'required' => 1),
 							'street' 			=> array('label' => isset($lang['street']) ? $lang['street'] : 'Street',
 														'type' => 'text',
+														'maxLength' => 40,
 														'required' => 1),
 							'house_no' 			=> array('label' => isset($lang['house_no']) ? $lang['house_no'] : 'House Number',
 														'type' => 'text',
+														'maxLength' => 10,
 														'required' => 1),
 							'extension' 		=> array('label' => isset($lang['extension']) ? $lang['extension'] : 'Extension',
 														'type' => 'text',
+														'maxLength' => 10,
 														'required' => 0),
 							'city' 				=> array('label' => isset($lang['city']) ? $lang['city'] : 'City',
 														'type' => 'text',
+														'maxLength' => 30,
 														'required' => 1),
 							'phone_no' 			=> array('label' => isset($lang['phone_no']) ? $lang['phone_no'] : 'Phone Number',
 														'type' => 'text',
+														'maxLength' => 25,
 														'required' => 0),				
 							'gls_note' 				=> array('label' => isset($lang['pickupnote']) ? $lang['pickupnote'] : 'Note',
 														'type' => 'text',
@@ -298,7 +307,8 @@ class HomeController extends Controller
 						 'cz' 	=> 'čeština',
 						 'hu' 	=> 'Magyar',
 						// 'tr' 	=> 'Turkish',						 
-						 'ro' 	=> 'Română');
+						 'ro' 	=> 'Română',
+						 'sk'	=> 'Slovak');
 		return $country;
 	}
 
@@ -329,45 +339,61 @@ class HomeController extends Controller
 			
 		
 		$shipping_partners['nl'] = 	array(	'homerr' => "4.99",
-											'gls' => "8.99",
-											'ups' => "7.99");
+											'gls' => "9.99",
+											'ups' => "7.99",
+											'gls_return' => "6.99",
+										);
 
 		$shipping_partners['be'] = 	array(	'homerr' => "5.99",
-											'gls' => "12.99",
-											'ups' => "9.99");
+											'gls' => "13.99",
+											'ups' => "8.99",
+											'gls_return' => "7.99");
 
-		$shipping_partners['de'] = 	array(	'gls' => "12.99",
-											'ups' => "9.99");
+		$shipping_partners['de'] = 	array(	'gls' => "13.99",
+											'ups' => "9.99",
+											'gls_return' => "8.99",);
 	
 		$shipping_partners['at'] = 	array(	'gls' => "13.99",
-											'ups' => "13.99");
+											'ups' => "13.99",
+											'gls_return' => "10.99");
 															
 		$shipping_partners['fr'] = 	array(	'gls' => "13.99",
-											'ups' => "11.99");
+											'ups' => "13.99",
+											'gls_return' => "11.99");
 											
 		$shipping_partners['dk'] = 	array(	'gls' => "99",
-											'ups' => "199");
+											'ups' => "125",
+											'gls_return' => "75");
 		
 		$shipping_partners['es'] = 	array(	'gls' => "16.99",
-											'ups' => "13.99");
+											'ups' => "14.99",
+											'gls_return' => "13.99",);
 
 		$shipping_partners['it'] = 	array(	'gls' => "14.99",
-											'ups' => "14.99");
+											'ups' => "13.99",
+											'gls_return' => "12.99");
 
 		$shipping_partners['se'] = 	array(	'gls' => "199",
-											'ups' => "189");
+											'ups' => "189",
+											'gls_return' => "159");
 											
 		$shipping_partners['fi'] = 	array(	'gls' => "17.99",
-											'ups' => "16.99");
+											'ups' => "16.99",
+											'gls_return' => "13.99");
 
-		$shipping_partners['pt'] = 	array(	'gls' => "15.99",
-											'ups' => "14.99");
+		$shipping_partners['pt'] = 	array(	'gls' => "14.99",
+											'ups' => "14.99",
+											'gls_return' => "12.99");
 
 		$shipping_partners['cz'] = 	array(	'ppl' => "120");
 
 		//$shipping_partners['hu'] = 	array(	'ppl' => "2500");
 
 		$shipping_partners['hu'] 	= 	array('gls_hu' => "2500");
+		
+		$shipping_partners['ro'] 	= 	array('gls_ro' => "24.99");
+		
+		$shipping_partners['sk'] 	= 	array('gls_sk' => "6.99");	
 
 		if($country == '')
 			$country = 'nl';
@@ -379,8 +405,8 @@ class HomeController extends Controller
 		$cntryshiping =	isset($shipping_partners[$country])	 ? $shipping_partners[$country] : $shipping_partners['nl'];
 		
 		
-		$free_shipping = array(	'nl' => 'homerr',
-								'be' => 'homerr',
+		/*$free_shipping = array(	'nl' => 'ups',
+								'be' => 'ups',
 								'de' => 'ups',
 								'at' => 'gls',
 								'fr' => 'ups',
@@ -392,24 +418,50 @@ class HomeController extends Controller
 								'pt' => 'ups',
 								'hu' => 'gls_hu',
 								'cz' => 'ppl');
-		
+		*/
 
-		$partners = array('homerr' 	=> array('name' 		=> isset($lang['homerr']) ? $lang['homerr'] : 'HOMERR',
+		$free_shipping = array(	'nl' => 'gls_return',
+								'be' => 'gls_return',
+								'de' => 'gls_return',
+								'at' => 'gls_return',
+								'fr' => 'gls_return',
+								'dk' => 'gls_return',
+								'es' => 'gls_return',
+								'it' => 'gls_return',
+								'se' => 'gls_return',
+								'fi' => 'gls_return',
+								'pt' => 'gls_return',
+								'hu' => 'gls_hu',
+								'cz' => 'ppl');
+
+		$partners = array(/*'homerr' 	=> array('name' 		=> isset($lang['homerr']) ? $lang['homerr'] : 'HOMERR',
 											'instruction' 	=> isset($lang['homerr_instruction']) ? $lang['homerr_instruction'] : '',
 											'rate' 			=> '4.99',
-											'icon'			=> 'Homerr-Logo.png'),
+											'icon'			=> 'Homerr-Logo.png'), */
 							'ups' 	=> array('name' 		=> isset($lang['ups']) ? $lang['ups'] : 'UPS',
 											'instruction' 	=> isset($lang['ups_instruction']) ? $lang['ups_instruction'] : '',
 											'rate' 			=> '7.99',
 											'icon'			=> 'UPS-logo.png'),	
-							'gls' 	=> array('name' 			=> isset($lang['gls']) ? $lang['gls'] : 'GLS',
+							'gls' 	=> array('name' 		=> isset($lang['gls']) ? $lang['gls'] : 'GLS',
 											'instruction' 	=> isset($lang['gls_instruction']) ? $lang['gls_instruction'] : '',
 											'rate' 			=> '8.99',
 											'icon'			=> 'GLS_Logo.png'),
-							'gls_hu' 	=> array('name' 			=> isset($lang['gls']) ? $lang['gls'] : 'GLS',
+							'gls_hu' 	=> array('name' 	=> isset($lang['gls']) ? $lang['gls'] : 'GLS',
 											'instruction' 	=> isset($lang['gls_instruction']) ? $lang['gls_instruction'] : '',
 											'rate' 			=> '8.99',
-											'icon'			=> 'GLS_Logo.png'),				
+											'icon'			=> 'GLS_Logo.png'),	
+							'gls_ro' 	=> array('name' 	=> isset($lang['gls']) ? $lang['gls'] : 'GLS',
+											'instruction' 	=> isset($lang['gls_instruction']) ? $lang['gls_instruction'] : '',
+											'rate' 			=> '8.99',
+											'icon'			=> 'GLS_Logo.png'),						
+							'gls_sk' 	=> array('name' 	=> isset($lang['gls']) ? $lang['gls'] : 'GLS SK',
+											'instruction' 	=> isset($lang['gls_instruction']) ? $lang['gls_instruction'] : '',
+											'rate' 			=> '6.99',
+											'icon'			=> 'GLS_Logo.png'),	
+							'gls_return' 	=> array('name' 	=> isset($lang['gls_return']) ? $lang['gls_return'] : 'GLS Shop Return',
+												'instruction' 	=> isset($lang['gls_return_instruction']) ? $lang['gls_return_instruction'] : '',
+												'rate' 			=> '6.99',
+												'icon'			=> 'GLS_Logo.png'),														
 							'ppl' 	=> array('name' 		=> isset($lang['ppl']) ? $lang['ppl'] : 'PPL',
 											'instruction' 	=> isset($lang['ppl_instruction']) ? $lang['ppl_instruction'] : '',
 											'rate' 			=> '8.99',
@@ -459,6 +511,7 @@ class HomeController extends Controller
 	public function fechOrdersInfo($order_id,$email_address){
 
 		$siteReference = substr($order_id, 0, 2);	
+		
 		$response_data	= '';	
 		$data		= array('order_id' => $order_id ,'order-email' => $email_address);
 
@@ -475,11 +528,14 @@ class HomeController extends Controller
 							"64" =>	"https://www.deluxerie.fi",
 							"74" =>	"https://www.deluxerie.pt",
 							"46" =>	"https://www.deluxerie.cz",
-							"44" =>	"https://deluxerie.hu");
+							"44" =>	"https://www.deluxerie.hu",
+							"53" =>	"https://www.deluxerie.ro",
+							"56" =>	"https://www.deluxerie.sk");
 
 		$url = isset($orderWebs[$siteReference]) ? $orderWebs[$siteReference] : 'https://dev1.deluxerie.com';
 		
 		//$url = 'https://dev1.deluxerie.com';
+		//echo $url.'/wp-json/order/get_order';
 		
 		if($url != ''){
 			$response = Http::withBody(json_encode($data),'application/json')->post($url.'/wp-json/order/get_order');
@@ -498,7 +554,7 @@ class HomeController extends Controller
 		//
 		$data = $request->input();
 		$order_id = $data['order_id'];
-		$_res = array('status'=> 'false','message' => 'invalid');	
+		$_res = array('status'=> 'false','message' => 'invalid','response' => 'invalid-response');	
 		$shipments  = new Shipments();     		        
         $_shipment = $shipments->where('order_id',$order_id)->where('is_deleted','0')->first();
 		if(!empty($_shipment)){
@@ -514,9 +570,37 @@ class HomeController extends Controller
 			$_res['status'] = 'exsist';
 			
 		}else{
+			$_res['response'] = 'New Orders';
 			$order_email = $data['order-email'];
 			$response_data = $this->fechOrdersInfo($order_id,$order_email);
-			$results =  json_decode($response_data,true);			
+			$results =  json_decode($response_data,true);	
+			
+			if(!empty($results)){
+				$completed_date = isset($results['data']['completed_date']) ? $results['data']['completed_date'] : null;
+				if(!empty($completed_date)){
+					$timezone 	= $completed_date['timezone'];
+					$_date 		= $completed_date['date'];
+					$date_now	= date('Y-m-d H:i:s');
+					//$timeZone 	= new \DateTimeZone($timezone);
+					
+					//$date_1 	= new \DateTime(strtotime($_date), $timeZone);
+					//$date_now 	= new \DateTime('now', $timeZone);
+					
+					$startDate = Carbon::parse($_date);
+					$endDate = Carbon::parse($date_now);
+					$dateDiff = $endDate->diffInDays($startDate);
+					$dateHours = $endDate->diffInHours($startDate);					
+					/*if($dateDiff > 30){	
+						$langCode 	= isset($_REQUEST['lang']) ? $_REQUEST['lang'] : '';
+						$lang		= $this->getLanuageLocale($langCode);
+						$message = isset($lang['order_return_exceed']) ? $lang['order_return_exceed'] : 'Your order is not eligible for return as it has exceeded the 30-day return or replace window as per our return policy.';
+						$_res = array('status'=> false,'data' => null ,'error' => 'time_exceed','message' => $message);
+						echo json_encode($_res); 
+						die;
+					}*/ 
+				}
+			}
+				
 			if($response_data != '' && $results['status'] != 0)
 				$_res = array('status'=> 'true','data' => $results);
 		}
@@ -528,7 +612,7 @@ class HomeController extends Controller
 		
 		$data = $this->PageDefaults();	
 		$data['title']		= 'Return Portal - Summary';
-
+		$pickup 			=  array("_gls","gls","gls_hu","gls_ro","gls_sk");				
 		if($request->input('request_id')){
 			$shipments  = new Shipments(); 
 			$shipmentId 	= $request->input('request_id');
@@ -578,7 +662,8 @@ class HomeController extends Controller
 			$data['product']		= $store_item;	
 			$data['address']		= $address_item;			
 			$data['formFields']		= $this->ShippingForm($data['lang']);
-			
+			$ship_method			= $ship_details['ship_method'];
+			$data['is_pickup']		= (in_array($ship_method,$pickup) !== false) ? 1 : 0;
 			
 			
 			return view('front-page/summary-retrive',$data);
@@ -595,7 +680,9 @@ class HomeController extends Controller
 			$data['data']		= $stored;
 			$data['orders']		= $orders;		
 			$data['title']		= 'Return Portal - Summary';
-
+			$ship_method		= $stored['ship_method'];
+			$data['is_pickup']	= (in_array($ship_method,$pickup) !== false) ? 1 : 0;
+			
 			if(isset($_GET['cancel'])){	
 				$logs = array(  'source_id' => $shipmentId,
 								'type'      => '2',
@@ -690,6 +777,9 @@ class HomeController extends Controller
 
 		//Clear session on final step
 		Session::forget('return_data');
+		
+		
+		$shipLabels 			= array('__ups','ups','ppl','homerr','gls_hu','gls_ro','gls_sk','gls_return');
 
 		$data['title']	 		= 'Return Portal - Thanks';
 		$data['shipment_id']	= $ship_id;
@@ -710,7 +800,7 @@ class HomeController extends Controller
 		}elseif($ship_details->payment_method == 'refund-deduction' || $ship_details->payment_method == 'store-creadit' || $ship_details->payment_method == '2'){
 			$order_success = 1;
 		}
-		 
+		$data['show_button']		= (in_array($ship_details->shiping_method,$shipLabels) !== false) ? 1 : 0;
 		$data['is_complete'] = $order_success;
 
 		/*$address        = new ShipmentAddress(); 
@@ -740,11 +830,25 @@ class HomeController extends Controller
 				$title		=	$language['email_thanks_title3'];
 				$body		=	$language['email_thanks_body3'];
 				$message	=	$language['email_thanks_title3'];
-			}elseif($ship_details->shiping_method == 'gls_hu'){
+			}elseif($ship_details->shiping_method == 'gls_hu' || $ship_details->shiping_method == 'gls_sk'){
 				$subject	=	$language['email_thanks_subject3'];
 				$title		=	$language['email_thanks_title3'];
 				$body		=	$language['email_thanks_body3'];
 				$message	=	$language['email_thanks_title3'];
+				$footer		=	$footer;
+				$button		=	$language['email_thanks_button'];	
+			}elseif($ship_details->shiping_method == 'gls_ro'){
+				$subject	=	$language['email_thanks_subject3'];
+				$title		=	$language['email_thanks_title3'];
+				$body		=	$language['email_thanks_body3'];
+				$message	=	$language['email_thanks_title3'];
+				$footer		=	$footer;
+				$button		=	$language['email_thanks_button'];	
+			}else if($ship_details->shiping_method == 'gls_return'){
+				$subject	=	$language['email_thanks_gls_return_subject'];
+				$title		=	$language['email_thanks_gls_return_title'];
+				$body		=	$language['email_thanks_gls_return_body'];
+				$message	=	$language['thanks_gls_return'];
 				$footer		=	$footer;
 				$button		=	$language['email_thanks_button'];	
 			}
@@ -760,8 +864,7 @@ class HomeController extends Controller
 							'message'   => $message,
 							'link'      => 'https://return.deluxerie.net/return-complete/'.$ship_id.'/'.$order_id);   
 
-				//$to_email = $shipmentinfo->order_email;				
-				$to_email = 'fatham09@gmail.com';
+				$to_email = $shipmentinfo->order_email;								
 				$ship_details['mail_sent'] = 1;
 				$ship_details->save();
 			\Mail::to($to_email)->send(new \App\Mail\ReturnMail($details)); 
@@ -793,5 +896,63 @@ class HomeController extends Controller
 
 		echo "LOAD PAY NOW HERE";
 
+	}
+	
+	public function getReturns(Request $request){
+		
+		
+		
+		$postInput 	= file_get_contents('php://input');		
+		$req_data 	= json_decode($postInput, true);
+		$order_id 	= (isset($req_data['order_id']) && $req_data['order_id'] != '') ? $req_data['order_id'] : '';
+		$email 		= isset($req_data['email']) ? $req_data['email'] : '';
+		$site 		= isset($req_data['site']) ? $req_data['site'] : '';
+		$langCode 	= isset($req_data['locale']) ? $req_data['locale'] : 'en';		
+		$response = array('data' => [],'options' => '','message' => '','status' => 'failed');		
+		$shipmentinfo = array();
+		$shipment_details = array();
+		$shipments = DB::table('shipments')
+		->leftJoin('shipment_details', 'shipments.id', '=', 'shipment_details.shipment_id')
+		//->leftJoin('shipment_items', 'shipments.id', '=', 'shipment_items.shipment_id')
+		->leftJoin('shipment_labels', 'shipments.id', '=', 'shipment_labels.shipment_id')
+		//->join('shipment_addresses', 'shipments.id', '=', 'shipment_addresses.shipment_id')
+		->select('shipments.*', 'shipment_details.shiping_method','shipment_details.shiping_price','shipment_details.payment_method','shipment_details.currency','shipment_details.payment_status','shipment_details.txn_id','shipment_details.store_note','shipment_labels.TrackingCode','shipment_labels.label_pdf','shipment_labels.TrackingLink','shipment_labels.label_info')->where('shipments.order_site','like', '%' . $site . '%');
+		
+		
+		
+		if($email != '' && $order_id != ''){
+			$shipmentinfo  	= $shipments->where('shipments.order_email',$email)->where('shipments.order_id',$order_id)->where('is_deleted',0)->orderBy('id','ASC')->get();
+		}else{
+			//echo $shipments->where('shipments.order_email',$email)->where('is_deleted', 0)->orderBy('id','ASC')->toSql();			
+			$shipmentinfo  	= $shipments->where('shipments.order_email',$email)->where('is_deleted', 0)->orderBy('id','ASC')->get();
+			
+			//print_r($shipmentinfo);
+		}
+		if(!empty($shipmentinfo)){
+			foreach($shipmentinfo as $ship_items){		
+				$shipmentId 	=  	$ship_items->id;
+				$order_id 		= 	$ship_items->order_id;
+				$shipment_details[$order_id] = $ship_items;
+				$shipment_items = new ShipmentItems(); 
+				$order_item 	= $shipment_items->where('shipment_id',$shipmentId)->get(); 
+				$shipment_details[$order_id]->items = $order_item; 
+				if($ship_items->shiping_method == 'gls'){
+					$address = new ShipmentAddress();  
+					$shipment_details[$order_id]->address = $address->where('shipment_id',$shipmentId)->first();  
+				}
+			}	
+			//$langCode			= 'en';
+			$lang				= $this->getLanuageLocale($langCode);		
+			//$returnResons		= $this->returnResons($lang);
+
+			$message 	= "Total ".count($shipmentinfo).' records found';
+			$response 	= array('data' => $shipment_details,'lang' => $lang,'message' => $message,'status' => 'success','total' => count($shipmentinfo));	
+		}		
+		return response()->json($response);
+	}
+	
+	public function getReturnById($id = ''){
+		echo $id;
+		
 	}
 }
