@@ -55,7 +55,8 @@ Route::get('client/notification', [ClientController::class, 'index']);
 Route::get('confirm/create-label/', [ShipmentLabelsController::class, 'CreateLabel']);
 Route::get('return-complete/{shipment_id}/{order_id}', [HomeController::class, 'thanks']); 
 Route::get('return-request/{shipment_id}/{order_id}', [HomeController::class, 'returnView'])->name('return-view'); 
-
+Route::get('webhook', [PaymentController::class, 'WebHookIndex'])->name('WebHookIndex'); 
+Route::post('webhook', [PaymentController::class, 'WebHookIndex'])->name('WebHookIndex-post'); 
 
 
 
@@ -79,6 +80,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/delete-request/{shipmentId}', [DashboardController::class, 'DeleteRequest'])->name('delete-request');
 
 	Route::post('/assign-users', [DashboardController::class, 'assingTasks'])->name('assign-users'); 
+	Route::get('/assign-users', [DashboardController::class, 'assingTasks'])->name('assign-user'); 
 
 	
     Route::get('/login', function () {

@@ -70,7 +70,7 @@ jQuery(document).ready(function($){
 	$(document.body).on('change','input.ship_method',function(e){
 		e.preventDefault();
 		var shipmethod = $(this).val();		
-		if($(this).is(':checked') && (shipmethod == 'gls' ||shipmethod == 'gls_hu')){
+		if($(this).is(':checked') && (shipmethod == 'gls' || shipmethod == 'gls_hu' || shipmethod == 'ppl')){
 			$('.gls-wrapper').fadeIn();
 			$('.gls-wrapper .form-control').each(function(){
 				if($(this).hasClass('required')){
@@ -94,7 +94,7 @@ jQuery(document).ready(function($){
 			$('.error-message').html(lang.shipping_error).show();
 			$("html, body").animate({ scrollTop: $('form.confirm-payment').offset().top });
 			return false;
-		}else if($('input.ship_method:checked').val() == 'gls' || $('input.ship_method:checked').val() == 'gls_hu'){
+		}else if($('input.ship_method:checked').val() == 'gls' || $('input.ship_method:checked').val() == 'gls_hu' || $('input.ship_method:checked').val() == 'ppl'){
 			var error = '';
 			$('.gls-wrapper .form-control').each(function(){
 				var _val = $(this).val();

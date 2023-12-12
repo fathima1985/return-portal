@@ -1484,6 +1484,8 @@ $(document).ready(function(){
 
   var _url = window.location.href;
   
+  
+  
   if($(document.body).find('.pagination').length > 0 && (_url.indexOf('?type=') ||  _url.indexOf('&type='))){
     var _ltr = '';
     if(_url.indexOf('?type=')){
@@ -1542,11 +1544,18 @@ $(document).ready(function(){
     $('#shipment_id').val(shipid);
     $(this).addClass('task_pending');
   });
+  
+  /*$(document).on('click','#assign_me',function(e){	  
+	alert("wowoaeaoswe");
+	return false;
+  }); */
 
   $(document.body).on('submit','#shipment_assign',function(e){
     e.preventDefault();
     var form = $(this);
     var actionUrl = form.attr('action');
+	
+	
 
     $.ajax({
       type: 'POST',

@@ -133,7 +133,7 @@
 									</div>
 									@endforeach
 								</div>
-								<div class="gls-wrapper" @if($data['ship_method'] == 'gls' || $data['ship_method'] == 'gls_hu') style="display:block" @else style="display:none"  @endif>
+								<div class="gls-wrapper" @if($data['ship_method'] == 'gls' || $data['ship_method'] == 'gls_hu' || $data['ship_method'] == 'ppl') style="display:block" @else style="display:none"  @endif>
 									<h3 class="text-center mt-4 mb-5">{!!$lang['packgae_form_instruction']!!}</h3>
 									<div class="error-message alert alert-danger mt-5 mb-5" role="alert" style="display:none"></div>					
 									<div class="shipping-field row pb-3">
@@ -159,10 +159,10 @@
 												@endif			
 												
 												@if($_value['type'] == 'date')
-												<input type="text" name="{{$key}}" class="datepicker form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  onfocus="focused(this)" onfocusout="defocused(this)"/>
+												<input type="text" name="{{$key}}" class="datepicker form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  onfocus="focused(this)" onfocusout="defocused(this)" @if(isset($_value['readonly'])) readonly @endif/>
 												
 												@else
-													<input type="{{$_value['type']}}" name="{{$key}}" class="form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  />
+													<input type="{{$_value['type']}}" name="{{$key}}" class="form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}" @if(isset($_value['readonly'])) readonly @endif />
 												@endif
 												
 											</div>

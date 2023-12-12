@@ -86,7 +86,9 @@ class ShipmentLabelsController extends Controller
 				$logs = array(  'source_id' => $_shipment->id,
 								'type'      => '3',
 								'note'      => 'Return label create request placed');                        
-				$log->create($logs);
+			//	$log->create($logs);
+				
+				
 				
                 switch($shiping_method){
                     case 'gls':						
@@ -103,7 +105,7 @@ class ShipmentLabelsController extends Controller
                         $ship_data = $this->getHomerLabels($details_shipment,$_shipment);
                         break;  
                     case 'ppl':
-                        //$ship_data = $this->pacticLabel($details_shipment,$_shipment);
+                        $ship_data = $this->pacticLabel($details_shipment,$_shipment,1);
                         break;         
                     default:
                         break;
@@ -210,9 +212,13 @@ class ShipmentLabelsController extends Controller
         $response   = Http::withHeaders([
                                 'Content-Type'  => 'application/json',
                                 'Cache-Control' => 'no-cache'
-                        ])->send('POST',$this->pactic_Endpoint,['body' => json_encode($homerParams)]);  
+                        ])->send('POST',$this->HomerrEndpoint,['body' => json_encode($homerParams)]);  
+						
+		
    
-        $res_data = json_decode($response->getBody()->getContents(),true);					
+        $res_data = json_decode($response->getBody()->getContents(),true);							
+		
+		
         if(isset($res_data['qrCode'])){
             $url = config('values.url'); 
             QrCode::generate($res_data['qrCode'], public_path('labelqr/'.$shipment->order_id.'.svg'));
@@ -229,7 +235,7 @@ class ShipmentLabelsController extends Controller
     }
 
 
-    public function pacticLabel($details_shipment = null,$shipment = null){
+    public function pacticLabel($details_shipment = null,$shipment = null,$ppl = 0){
         $shipmentId     = $shipment->id;
         $customer       = json_decode($details_shipment->customer_details);
         $address        = new ShipmentAddress();  
@@ -242,9 +248,17 @@ class ShipmentLabelsController extends Controller
 		$requset['txPassword'] 	= $this->pactic_Password;
 		$requset['cdLang'] 		= "EN";
 		$requset['flSendWaybill'] = "true";
+        
         $idCarrier  = 2;
         $idService  = 1;
-        $reference = $shipment->order_id.'-RR';        
+
+        if($ppl){
+            $idCarrier  = 35;
+            $idService  = 5;
+        }
+
+        $reference = $shipment->order_id.'-RR'; 
+
         $book = array("dtPickup"  => $address_item->collection_date,
 					  "idCarrier" => $idCarrier,
 					  "idService" => $idService, 
@@ -280,7 +294,11 @@ class ShipmentLabelsController extends Controller
                                 "cdDropOffPoint" 		=> ''
                              );
 
-        $invoice  = array("nmCompanyOrPerson" => "BTA Online",
+	   $invoice_emial = 'operation@deluxerie.com';
+	   if($ppl){
+		   $invoice_emial = 'payments@deluxerie.com';
+	   }
+	   $invoice  = array("nmCompanyOrPerson" => "BTA Online",
                        "txAddress" 			=> "Eerste Zeine",
                        "txAddressNumber"	=> "142",
                        "txPost"				=> "5144AM",
@@ -290,21 +308,38 @@ class ShipmentLabelsController extends Controller
                        "nmContact"          => "Ece Eker",
                        "txPhoneContact"     => "+31627082823",
                        "txVAT"				=> "NL004275051B52",
-                       "txInvoiceEmail"		=> "operation@deluxerie.com");    
-                       
-        $destination	 = array("nmCompanyOrPerson" 	=> 'BTA Online / Deluxerie',
+                       "txInvoiceEmail"		=> $invoice_emial);    
+        
+
+				
+		if($ppl){
+			$destination	 = array("nmCompanyOrPerson" 	=> 'BTA Online / Deluxerie',
                                 "nmContact" 			=> 'Deluxerie Returns',
                                 "txPhoneContact" 		=> '+31627082823',
                                 "txEmailContact" 		=> 'return@deluxerie.net',
-                                "txAddress" 			=> 'N\u00e1das utca 4',
+                                "txAddress" 			=> 'Starovice 900',
                                 "txAddressNumber" 		=> '.',
-                                "txPost" 				=> '2142',
-                                "txCity"				=> 'Nagytarcsa',
-                                "cdCountry" 			=> 'HU',
+                                "txPost" 				=> '65999',
+                                "txCity"				=> 'Depo Hustopece',
+                                "cdCountry" 			=> 'CZ',
                                 "cdProvince" 			=> "",
                                 "txInstruction" 		=> "",
                                 "cdDropOffPoint" 		=> "");	  
 
+		}else{		
+			$destination	 = array("nmCompanyOrPerson" 	=> 'BTA Online / Deluxerie',
+									"nmContact" 			=> 'Deluxerie Returns',
+									"txPhoneContact" 		=> '+31627082823',
+									"txEmailContact" 		=> 'return@deluxerie.net',
+									"txAddress" 			=> 'N\u00e1das utca 4',
+									"txAddressNumber" 		=> '.',
+									"txPost" 				=> '2142',
+									"txCity"				=> 'Nagytarcsa',
+									"cdCountry" 			=> 'HU',
+									"cdProvince" 			=> "",
+									"txInstruction" 		=> "",
+									"cdDropOffPoint" 		=> "");	  
+		}
         $packages = array("tyPackage"	    => "PARCEL",
                             "ctPackage"	    => 1,
                             "cmWidth"		=> 10,
@@ -325,13 +360,17 @@ class ShipmentLabelsController extends Controller
        // $requset['QUOTE']['EXTRAS'] 		            = $extras;   
         $pactic_data =  array('REQUEST' => $requset);
        // $pacticinfo = $this->getRequest('​​',$pactic_data,'POST');
+      
 
         $response   = Http::withHeaders([
             'Content-Type'  => 'application/json',
             'Cache-Control' => 'no-cache',                                            
         ])->send('POST',$this->pactic_Endpoint,['body' => json_encode($pactic_data)]);  
-
+	
         $res_data = json_decode($response->getBody()->getContents(),true);	
+		
+		
+
         $url = config('values.APP_URL');     
         $response_data = array();                            
         $_messages =  $res_data['Messages'];

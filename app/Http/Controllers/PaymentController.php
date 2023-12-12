@@ -43,7 +43,7 @@ class PaymentController extends Controller
         
         if($payment_method == 'online-payment'){
             $this->CompletePayment($payment_id,$shipment_id);
-        }else{                      
+        }else{    			
             header('Location: '.'/return-complete/'.$shipment_id.'/'.$payment_id);
 		    die();
         }
@@ -170,7 +170,10 @@ class PaymentController extends Controller
     public function buildObject($shipmentinfo){
         
         $shipmentId     = isset($shipmentinfo['shipment_id']) ? $shipmentinfo['shipment_id'] : 0;
-        $ship_method    = $shipmentinfo['ship_method'];
+		if(isset($shipmentinfo['ship_method']))
+			$ship_method    = $shipmentinfo['ship_method'];
+		elseif(isset($shipmentinfo['shiping_method']))
+			$ship_method    = $shipmentinfo['shiping_method'];
        
         $items          = isset($shipmentinfo['product']) ? $shipmentinfo['product'] : null;           
         if(empty($items))
@@ -253,10 +256,11 @@ class PaymentController extends Controller
 			}							
             $details  = new ShipmentDetails();
             $ship_details = $details->where('shipment_id',$shipmentId)->first();
-            if(empty($ship_details))
-                $details->create($shipmentDetails);   
-            else    
+            if(empty($ship_details)){
+				$details->create($shipmentDetails);   
+            }else{
                 $ship_details->update($shipmentDetails);   
+			}
 
             $order_items    = $orderdata['items'];
             $return_reason  = $shipmentinfo['return_reason'];
@@ -303,7 +307,7 @@ class PaymentController extends Controller
 
 
 
-                if($ship_method == 'gls' || $ship_method == 'gls_hu'){
+                if($ship_method == 'gls' || $ship_method == 'gls_hu' || $ship_method == 'ppl'){
 					
 					$contryCode = $shipmentinfo['country'];
 					/*if(strlen($contryCode) > 2){

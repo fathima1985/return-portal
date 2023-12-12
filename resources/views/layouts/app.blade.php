@@ -86,7 +86,7 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <script type="text/javascript" src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/soft-ui-dashboard.js?v=1.0.3"></script>
+  <script src="../assets/js/soft-ui-dashboard.js?v={{time()}}"></script>
 </body>
 
 </html>

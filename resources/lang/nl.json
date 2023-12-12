@@ -65,6 +65,8 @@
    "ups_instruction":"U kunt uw retourpakket afgeven bij een dichtstbijzijnde UPS Access-Point.<br/> Er wordt een PDF-verzendlabel verstrekt voor de UPS-retouren, dus het is wel vereist om het verzendlabel af te drukken.",
    "gls":"GLS - Ophalen van het adres",
    "gls_instruction":"Uw retourpakket wordt door GLS op de gewenste datum en op het gewenste adres opgehaald.<br/> Het afdrukken van een verzendlabel is niet vereist voor de GLS-retouren. Een GLS-chauffeur komt uw retourpakket ophalen.",
+   "gls_hu":"GLS - Pick-up from the address",
+   "gls_hu_instruction":"Your return package will be collected by the GLS on the desired date and from the desired address.<br/>Printing shipping label is not required for the GLS returns. A GLS driver will be came to pick up your return package.",
    "ppl":"PPL ParcelShop",
    "ppl_instruction":"U kunt uw retourpakket afgeven bij de dichtstbijzijnde PPL ParcelShop.<br\/> Er wordt een PDF-verzendlabel verstrekt voor de PPL-retouren, dus het is wel vereist om het verzendlabel af te drukken.",
    "packgae_form_instruction":"Vul onderstaand aanvraagformulier voor het ophalen van uw pakket(ten) in.",

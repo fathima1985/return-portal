@@ -273,6 +273,8 @@ class DashboardController extends Controller
                                                     'icon'			=> 'UPS-logo.png'),	
                                     'gls' 	=> array('name' 		=> 'GLS',
                                                     'icon'			=> 'GLS_Logo.png'),
+									'gls_hu' 	=> array('name' 	=> 'GLS HU',
+                                                    'icon'			=> 'GLS_Logo.png'),
                                     'ppl' 	=> array('name' 		=> 'PPL',
                                                     'icon'			=> 'ppl-logo.png'),
                                     'own' 	=> array('name' 		=> 'Other - At my own expense',

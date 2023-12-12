@@ -208,6 +208,7 @@ class HomeController extends Controller
 														'required' => 1),
 							'country' 			=> array('label' => isset($lang['country']) ? $lang['country'] : 'Country',
 														'type' => 'text',
+														'readonly' => 1,	
 														'required' => 1),
 							'post_code' 		=> array('label' => isset($lang['zipcode']) ? $lang['zipcode'] : 'ZIP/Post Code',
 														'type' => 'text',
@@ -306,37 +307,42 @@ class HomeController extends Controller
 		
 	}
 	
-	public static function getShippingPartners($country = 'nl',$lang = null){
-
+	public static function getShippingPartners($country = 'nl',$lang = null){		
 		$is_creadit			= 0;
+		$is_exchange		= 0;
 		if(Session::get('return_data')){
 			$stored 			= json_decode(Session::get('return_data'),true);
 			$return_type		= isset($stored['return_type']) ? $stored['return_type'] : null;
 			
 			if(!empty($return_type)){
 				foreach($return_type as $key => $val){
-					if($val == 'store_coupon'){
+					if($val == 'exchange'){
+						//$is_exchange = 1;
+					}elseif($val == 'store_coupon'){
 						$is_creadit = 1;
 					}	
 				}
 			}
 		}
 
+
+			
 		
 		$shipping_partners['nl'] = 	array(	'homerr' => "4.99",
 											'gls' => "8.99",
 											'ups' => "7.99");
-		$shipping_partners['be'] = 	array(	'homerr' => "5.99",
-											'gls' => "11.99",
-											'ups' => "7.99");
 
-		$shipping_partners['de'] = 	array(	'gls' => "11.99",
-											'ups' => "8.99");
+		$shipping_partners['be'] = 	array(	'homerr' => "5.99",
+											'gls' => "12.99",
+											'ups' => "9.99");
+
+		$shipping_partners['de'] = 	array(	'gls' => "12.99",
+											'ups' => "9.99");
 	
-		$shipping_partners['at'] = 	array(	'gls' => "12.99",
+		$shipping_partners['at'] = 	array(	'gls' => "13.99",
 											'ups' => "13.99");
 															
-		$shipping_partners['fr'] = 	array(	'gls' => "12.99",
+		$shipping_partners['fr'] = 	array(	'gls' => "13.99",
 											'ups' => "11.99");
 											
 		$shipping_partners['dk'] = 	array(	'gls' => "99",
@@ -345,14 +351,14 @@ class HomeController extends Controller
 		$shipping_partners['es'] = 	array(	'gls' => "16.99",
 											'ups' => "13.99");
 
-		$shipping_partners['it'] = 	array(	'gls' => "13.99",
+		$shipping_partners['it'] = 	array(	'gls' => "14.99",
 											'ups' => "14.99");
 
 		$shipping_partners['se'] = 	array(	'gls' => "199",
-											'ups' => "169");
+											'ups' => "189");
 											
 		$shipping_partners['fi'] = 	array(	'gls' => "17.99",
-											'ups' => "15.99");
+											'ups' => "16.99");
 
 		$shipping_partners['pt'] = 	array(	'gls' => "15.99",
 											'ups' => "14.99");
@@ -383,7 +389,9 @@ class HomeController extends Controller
 								'it' => 'gls',
 								'se' => 'ups',
 								'fi' => 'ups',
-								'pt' => 'ups');
+								'pt' => 'ups',
+								'hu' => 'gls_hu',
+								'cz' => 'ppl');
 		
 
 		$partners = array('homerr' 	=> array('name' 		=> isset($lang['homerr']) ? $lang['homerr'] : 'HOMERR',
@@ -414,7 +422,7 @@ class HomeController extends Controller
 		foreach($partners as $key => $item){
 			if(isset($cntryshiping[$key])){
 				$shippartners[$key]	= $item;				
-				if($is_creadit)
+				if($is_creadit && !$is_exchange)
 					$shippartners[$key]['rate'] = '0.0';
 				else
 					$shippartners[$key]['rate'] = $cntryshiping[$key];
@@ -422,7 +430,7 @@ class HomeController extends Controller
 		}
 		
 		
-		if($is_creadit){
+		if($is_creadit && !$is_exchange){
 			$method = isset($free_shipping[$country]) ? $free_shipping[$country] : '';
 			if($method != ''){
 				$_shippartners[$method] = $shippartners[$method];
@@ -436,8 +444,7 @@ class HomeController extends Controller
 
 		}
 		
-		if(isset($shippartners['ppl']))
-			unset($shippartners['ppl']);
+		
 		
 		/*$shippartners['store_creadit'] = array('name' 		=> 'Store Credit',
 											  'instruction' 	=> 'Your return package will be collected by the GLS from desired address and date.',
@@ -571,6 +578,9 @@ class HomeController extends Controller
 			$data['product']		= $store_item;	
 			$data['address']		= $address_item;			
 			$data['formFields']		= $this->ShippingForm($data['lang']);
+			
+			
+			
 			return view('front-page/summary-retrive',$data);
 
 		}else{	
@@ -602,9 +612,8 @@ class HomeController extends Controller
 	public function ConfirmSummary(request $request){
         $formData       = $request->input();
 		$order_id		= 0;
-
-		
 		if($request->input('shipment_id')){
+			$shipmentinfo 				= $request->input();
 		}elseif(Session::get('return_data')){
 			$shipmentinfo 				= json_decode(Session::get('return_data'),true);
 			$formData['orderjson']      = $shipmentinfo['orderjson'];
@@ -631,7 +640,7 @@ class HomeController extends Controller
 		if(!empty($return_type)){
 			foreach($return_type as $key => $val){
 				if($val == 'exchange'){
-					$is_exchange = 1;
+					//$is_exchange = 1;
 				}elseif($val == 'store_coupon'){
 					$is_creadit = 1;
 				}	
@@ -647,7 +656,7 @@ class HomeController extends Controller
 			$shipmentinfo['payment_method'] = '2';	
 			$payment_id     = $order_id.'-'.time();		
 			$shipmentinfo['payment_id']     = $payment_id;
-			$shipment_id    = $payment->buildObject($shipmentinfo);							
+			$shipment_id    = $payment->buildObject($shipmentinfo);	
 			return Redirect::to('/return-complete/'.$shipment_id.'/'.$payment_id);
 
 		}elseif($formData['ship_method'] == 'own'){

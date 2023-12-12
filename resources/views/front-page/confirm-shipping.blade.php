@@ -14,7 +14,7 @@
 						<div class="shipping-list">
 							@php $i = 0 @endphp
 							@foreach($shipping as $key => $value)
-							<div class="form-group py-3 px-4">								
+							<div class="form-group py-3 px-4 shipping-{{$key}}">								
 								<input type="radio" name="ship_method" class="ship_method" value="{{$key}}" id="{{$key}}" @if($data['retrive'] == 1 && $data['ship_method'] == $key) checked   @endif />
 								<label for="{{$key}}" class="d-flex align-items-center justify-content-between position-relative">
 									<span class="ship-name">
@@ -63,10 +63,10 @@
 										@endif
 									
 										@if($_value['type'] == 'date')
-										<input type="text" name="{{$key}}" class="datepicker form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  onfocus="focused(this)" onfocusout="defocused(this)"/>
+										<input type="text" name="{{$key}}" class="datepicker form-control field_{{$key}} @if($_value['required'] == 1) required @endif"  value="{{$value}}"  onfocus="focused(this)" onfocusout="defocused(this)" @if(isset($_value['readonly'])) readonly @endif/>
 										
 										@else
-											<input type="{{$_value['type']}}" name="{{$key}}" class="form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  />
+											<input type="{{$_value['type']}}" name="{{$key}}" class="form-control field_{{$key}} @if($_value['required'] == 1) required @endif" value="{{$value}}"  @if(isset($_value['readonly'])) readonly @endif/>
 										@endif
 									</div>
 								@endforeach
