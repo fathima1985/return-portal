@@ -15,6 +15,13 @@ use App\Models\ShipmentAddress;
 use App\Models\ShipmentItems;
 use App\Models\PortalLogs;
 use App\Http\Controllers\PaymentController;
+use App\Models\languages;
+use App\Models\Language_keys;
+use App\Models\language_details;
+use App\Models\stores;
+use App\Models\shipping_methods;
+use App\Models\stroe_shipping;
+
 use File;
 
 class HomeController extends Controller
@@ -95,17 +102,25 @@ class HomeController extends Controller
 	public function getLanuageLocale($langCode = 'en'){		
 		if($langCode == '')
 			$langCode = 'en';
-		$dataJson = $this->openJSONFile($langCode);		
+		$dataJson = $this->openJSONFile($langCode);	
 		return $dataJson;
 
 	}
 
 	private function openJSONFile($code){
-        $jsonString = [];
-        if(File::exists(base_path('resources/lang/'.$code.'.json'))){
-            $jsonString = file_get_contents(base_path('resources/lang/'.$code.'.json'));
-            $jsonString = json_decode($jsonString, true);
-        }
+		$jsonString = [];
+		$languages        =  language_details::leftjoin('languages','language_details.language_id','=','languages.id')->leftjoin('language_keys','language_details.language_key','=','language_keys.id')->where('languages.language_code',$code)->select(['language_details.*','languages.language_code','languages.language_name','language_keys.language_index'])->get();
+
+		if(!empty($languages)){
+			foreach($languages as $_lang){
+				$values = $_lang->language_string;
+				$index 	= $_lang->language_index;
+				$jsonString[$index] = $values;
+				if (is_string($values) && is_array(json_decode($values, true))){
+					$jsonString[$index] = json_decode($values,true);
+				}
+			}
+		}        
         return $jsonString;
     }
 
@@ -121,22 +136,9 @@ class HomeController extends Controller
 			$langCode = 'en';
 		}
 		
-		$country = array('en' 	=> 'English',
-						 'nl' 	=> 'Dutch',
-						 'de' 	=> 'Deutsch',
-						 'fr' 	=> 'Français',
-						 'es' 	=> 'Español',
-						 'pt' 	=> 'Português',
-						 'it' 	=> 'Italiano',
-						 'dk' 	=> 'Dansk',
-						 'se' 	=> 'Svenska',
-						 'fi' 	=> 'Suomi',
-						 'cz' 	=> 'čeština',
-						 'hu' 	=> 'Magyar',
-						 'tr' 	=> 'Turkish',						 
-						 'ro' 	=> 'Română',
-						 'sk'	=> 'Slovak');
-						 
+
+		$country = $this->getLanguage();
+
 		if(isset($country[$langCode])){				 
 			$selected	=  $country[$langCode];
 			unset($country[$langCode]);	
@@ -294,21 +296,11 @@ class HomeController extends Controller
 	}	
 
 	public function getLanguage(){
-		$country = array('en' 	=> 'English',
-						 'nl' 	=> 'Nederlands',
-						 'de' 	=> 'Deutsch',
-						 'fr' 	=> 'Français',
-						 'es' 	=> 'Español',
-						 'pt' 	=> 'Português',
-						 'it' 	=> 'Italiano',
-						 'dk' 	=> 'Dansk',
-						 'se' 	=> 'Svenska',
-						 'fi' 	=> 'Suomi',
-						 'cz' 	=> 'čeština',
-						 'hu' 	=> 'Magyar',
-						// 'tr' 	=> 'Turkish',						 
-						 'ro' 	=> 'Română',
-						 'sk'	=> 'Slovak');
+		$country = array();
+		$languages      = languages::orderBy('position')->where('status',1)->get();		
+		foreach($languages as $lang){
+			$country[$lang->language_code] = $lang->language_name;
+		}
 		return $country;
 	}
 
@@ -316,8 +308,29 @@ class HomeController extends Controller
 
 		
 	}
+
+	public function getShippingMethod($store_id,$store_creadit = 0){
+		$store      = stores::find($store_id);         
+		$shiping	= array();
+		if($store_creadit){
+			$shiping    = stores::leftjoin('stroe_shippings','stores.id','=','stroe_shippings.store_id')                    
+			->leftjoin('shipping_methods','stroe_shippings.shipping_method','=','shipping_methods.id')                    
+			->where('stroe_shippings.is_free',1)->where('stroe_shippings.store_id',$store_id)->where('stroe_shippings.is_active',1)->select(['stores.*','stroe_shippings.shipping_price','stroe_shippings.is_default','stroe_shippings.is_free','stroe_shippings.id as ship_id','shipping_methods.shipping_title','shipping_methods.shipping_name','shipping_methods.shipping_logo','shipping_methods.is_pickup','stroe_shippings.shipping_method','stroe_shippings.is_default'])->orderBy('stroe_shippings.is_active','DESC')->get();
+
+		}
+
+		if(empty($shiping)){
+       		 $shiping    = stores::leftjoin('stroe_shippings','stores.id','=','stroe_shippings.store_id')                    
+                    ->leftjoin('shipping_methods','stroe_shippings.shipping_method','=','shipping_methods.id')                    
+                    ->where('stroe_shippings.store_id',$store_id)->where('stroe_shippings.is_active',1)->select(['stores.*','stroe_shippings.shipping_price','stroe_shippings.is_default','stroe_shippings.is_free','stroe_shippings.id as ship_id','shipping_methods.shipping_title','shipping_methods.shipping_name','shipping_methods.shipping_logo','shipping_methods.is_pickup','stroe_shippings.shipping_method','stroe_shippings.is_default'])->orderBy('stroe_shippings.is_active','DESC')->get();
+		}
+
+		return $shiping;
+	}
 	
-	public static function getShippingPartners($country = 'nl',$lang = null){		
+	public function getShippingPartners($country = 'nl',$lang = null){	
+		$store_id 			= Session::get('store_id');	
+		$shippartners		= array();
 		$is_creadit			= 0;
 		$is_exchange		= 0;
 		if(Session::get('return_data')){
@@ -333,11 +346,52 @@ class HomeController extends Controller
 					}	
 				}
 			}
+		}		
+		
+		$store_id = 1;
+		$ship_free	= 0;
+
+		if($is_creadit && !$is_exchange){
+			$ship_free = 1;
 		}
 
+		$shipping_method = $this->getShippingMethod($store_id,$ship_free);
 
-			
 		
+		
+		if(!empty($shipping_method)){
+			foreach($shipping_method as $_method){
+				$_index	 = $_method->shipping_name;
+				$_name 			= isset($lang[$_index]) ? $lang[$_index] : $_method->shipping_title;
+				$instruction	= isset($lang[$_index.'_instruction']) ? $lang[$_index.'_instruction'] : $_method->shipping_title;
+				$shippartners[$_index]	=	array(	'name'			=> $_name,
+												 	'instruction' 	=> $instruction,
+													 'default' 		=> $_method->is_default,
+													 'rate' 		=> $_method->shipping_price,
+													 'pickup' 		=> $_method->is_pickup,
+										  			 'free' 		=> $_method->is_free,
+													 'icon'			=> $_method->shipping_logo);
+			}
+		}
+		
+
+		if(!$ship_free){	
+			$_index			= 'own';
+			$_name 			= isset($lang[$_index]) ? $lang[$_index] : $_method->shipping_title;
+			$instruction	= isset($lang[$_index.'_instruction']) ? $lang[$_index.'_instruction'] : '';
+
+			$shippartners['own']	=	array(	'name'			=> $_name,
+												'instruction' 	=> $instruction,
+												'rate' 			=> '0.00',
+												'default' 		=>  0,
+												'pickup' 		=>  0,
+												'free' 			=>  0,
+												'icon'			=> '');
+		}
+		
+		
+		/*
+
 		$shipping_partners['nl'] = 	array(	'homerr' => "4.99",
 											'gls' => "9.99",
 											'ups' => "7.99",
@@ -405,20 +459,6 @@ class HomeController extends Controller
 		$cntryshiping =	isset($shipping_partners[$country])	 ? $shipping_partners[$country] : $shipping_partners['nl'];
 		
 		
-		/*$free_shipping = array(	'nl' => 'ups',
-								'be' => 'ups',
-								'de' => 'ups',
-								'at' => 'gls',
-								'fr' => 'ups',
-								'dk' => 'gls',
-								'es' => 'ups',
-								'it' => 'gls',
-								'se' => 'ups',
-								'fi' => 'ups',
-								'pt' => 'ups',
-								'hu' => 'gls_hu',
-								'cz' => 'ppl');
-		*/
 
 		$free_shipping = array(	'nl' => 'gls_return',
 								'be' => 'gls_return',
@@ -437,7 +477,7 @@ class HomeController extends Controller
 		$partners = array(/*'homerr' 	=> array('name' 		=> isset($lang['homerr']) ? $lang['homerr'] : 'HOMERR',
 											'instruction' 	=> isset($lang['homerr_instruction']) ? $lang['homerr_instruction'] : '',
 											'rate' 			=> '4.99',
-											'icon'			=> 'Homerr-Logo.png'), */
+											'icon'			=> 'Homerr-Logo.png'), 
 							'ups' 	=> array('name' 		=> isset($lang['ups']) ? $lang['ups'] : 'UPS',
 											'instruction' 	=> isset($lang['ups_instruction']) ? $lang['ups_instruction'] : '',
 											'rate' 			=> '7.99',
@@ -480,9 +520,9 @@ class HomeController extends Controller
 					$shippartners[$key]['rate'] = $cntryshiping[$key];
 			}
 		}
+		*/
 		
-		
-		if($is_creadit && !$is_exchange){
+		/*if($is_creadit && !$is_exchange){
 			$method = isset($free_shipping[$country]) ? $free_shipping[$country] : '';
 			if($method != ''){
 				$_shippartners[$method] = $shippartners[$method];
@@ -494,60 +534,32 @@ class HomeController extends Controller
 											'instruction' 	=> $lang['own_expensetext'],'rate' 			=> '0.00',
 											'icon'			=> '');
 
-		}
-		
-		
-		
-		/*$shippartners['store_creadit'] = array('name' 		=> 'Store Credit',
-											  'instruction' 	=> 'Your return package will be collected by the GLS from desired address and date.',
-											  'rate' 			=> '8.99',
-											  'icon'			=> 'ppl-logo.png');*/
-
-	
+		} */
 		return $shippartners;
 
 	}
 
 	public function fechOrdersInfo($order_id,$email_address){
 
-		$siteReference = substr($order_id, 0, 2);	
-		
+		$siteReference 	= substr($order_id, 0, 2);		
+		$store 			= stores::where('order_prefix',$siteReference)->get()->first();	
 		$response_data	= '';	
-		$data		= array('order_id' => $order_id ,'order-email' => $email_address);
+		$data			= array('order_id' => $order_id ,'order-email' => $email_address);
+		$url 			= $store->site_url;
 
-		$orderWebs = array(	"10" =>	"https://www.deluxerie.nl",
-							"20" =>	"https://www.deluxerie.be",
-							"30" =>	"https://www.deluxerie.de",
-							"40" =>	"https://www.deluxerie.at",
-							"50" =>	"https://www.deluxerie.fr",
-							"24" =>	"https://fr.deluxerie.be",
-							"60" =>	"https://www.deluxerie.dk",
-							"70" =>	"https://www.deluxerie.es",
-							"80" =>	"https://www.deluxerie.it",
-							"90" =>	"https://www.deluxerie.se",
-							"64" =>	"https://www.deluxerie.fi",
-							"74" =>	"https://www.deluxerie.pt",
-							"46" =>	"https://www.deluxerie.cz",
-							"44" =>	"https://www.deluxerie.hu",
-							"53" =>	"https://www.deluxerie.ro",
-							"56" =>	"https://www.deluxerie.sk");
+		Session::put('store_id', $store->id);
 
-		$url = isset($orderWebs[$siteReference]) ? $orderWebs[$siteReference] : 'https://dev1.deluxerie.com';
-		
-		//$url = 'https://dev1.deluxerie.com';
-		//echo $url.'/wp-json/order/get_order';
-		
+		if($url != ''){
+			$url = 'https://dev1.deluxerie.com';
+		}
 		if($url != ''){
 			$response = Http::withBody(json_encode($data),'application/json')->post($url.'/wp-json/order/get_order');
-			
-	
 			if ($response->getStatusCode() == 200) { // 200 OK
 				$response_data = $response->getBody()->getContents();					
-				//$_res = array('status'=> 'true','data' => json_decode($response_data,true));
+				
 			}
 		}
 		return $response_data;
-
 	}
 
 	public function PullOrdersdetails(request $request ){
@@ -617,10 +629,6 @@ class HomeController extends Controller
 			$shipments  = new Shipments(); 
 			$shipmentId 	= $request->input('request_id');
 			$shipmentinfo  	= $shipments->where('id',$shipmentId)->first();
-
-			
-
-			
 			if(empty($shipmentinfo))
 				return Redirect::to('/');
 
@@ -707,13 +715,9 @@ class HomeController extends Controller
 			$formData['order_id']       = $shipmentinfo['order_id'];
 			$formData['order_email']    = $shipmentinfo['order_email'];
 		}	
-
-		
 		
 		if(empty($formData))
 			return Redirect::to('/');
-			
-			
 
 		$order_id		= $formData['order_id'];
         Session::put('return_data', json_encode($formData));
@@ -792,6 +796,7 @@ class HomeController extends Controller
 		$details  		= new ShipmentDetails();
 		$ship_details 	= $details->where('shipment_id',$ship_id)->first();	
 		$data['shiping_method']	= $ship_details->shiping_method;
+
 		$language		= $data['lang'];
 		$order_success	= 0;		
 		

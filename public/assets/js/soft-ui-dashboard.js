@@ -1482,6 +1482,11 @@ var soft = {
 
 $(document).ready(function(){
 
+  /*if($(document.body).find('.summernote').length > 0){
+    //$('.summernote').summernote();
+  }*/
+
+
   var _url = window.location.href;
   
   
@@ -1575,9 +1580,72 @@ $(document).ready(function(){
 			if( i != current_count )
 				$('.pagination > nav a.link_item_'+i).hide();
 		}			
-	  }			  
-	  
-	  
+	  }
+  }
+
+
+  $(document.body).on('submit','form.save-language-info',function(e){
+    var object  = {};
+    $(this).find('.form-control').each(function(){
+      var _name = $(this).attr('name');
+      var _value = $(this).val();
+      var name_attr = $(this).attr('data-name');
+      formData.append(name_attr, _value);        
+      object[_name] = _value;
+    });    
+    save_languagekey(object);
+
+  });
+
+  $(document.body).on('click','.save-all-keys',function(e){
+    var form = $('#key-full-submit')[0];
+    var formData = new FormData(form);
+    var object  = {};
+    $('ul.list-group').find('.form-control').each(function(){
+      var _name = $(this).attr('name');
+      var _value = $(this).val();
+      var name_attr = $(this).attr('data-name');
+      formData.append(name_attr, _value);        
+      object[_name] = _value;
+    });    
+    save_languagekey(object);
+  });
+
+  function save_languagekey(_data){
+    $.ajax({
+      type: 'POST',
+      method: 'POST',
+      url: '/update_language',
+      dataType: "JSON",
+      data: _data,      
+      beforeSend:function(){
+        $('#staticBackdrop').modal('toggle');
+        Swal.fire({
+          title: 'Please Wait',
+          allowEscapeKey: false,
+          allowOutsideClick: false,  
+          showConfirmButton: false,    
+          onOpen: () => {
+            Swal.showLoading();
+          }
+        });
+      },
+      success: function (res){  
+        
+      
+        
+      },
+      complete:function(){
+        Swal.fire({ 
+            title: 'done!!!',
+            type: 'success',
+            timer: 1000,
+            showConfirmButton: false
+        });
+       // window.location.reload();
+      }
+    });
+
   }
   $(document.body).on('submit','#shipment_assign',function(e){
     e.preventDefault();

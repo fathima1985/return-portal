@@ -187,7 +187,7 @@ class PaymentController extends Controller
         $country		= isset($_json['billing']['country']) ? $_json['billing']['country'] : 'nl';
 
         if($ship_method != 'own'){
-            $shiping_wrap   = HomeController::getShippingPartners($country);        
+            $shiping_wrap   = app('App\Http\Controllers\HomeController')->getShippingPartners($country);        
             $ship_price     = $shiping_wrap[$ship_method]['rate'];
         }else{
             $ship_price     = 0;

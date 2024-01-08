@@ -16,11 +16,25 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\HomeController;
+
+use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+
 use Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\PortalLogs;
-use Carbon\Carbon;
+use App\Models\languages;
+use App\Models\Language_keys;
+use App\Models\language_details;
+use App\Models\stores;
+use App\Models\shipping_methods;
+use App\Models\stroe_shipping;
+use App\Traits\Upload;
+use App\Models\settings;
 
+use Carbon\Carbon;
+use File;
 class DashboardController extends Controller
 {
     public $user;
@@ -498,5 +512,344 @@ class DashboardController extends Controller
        }
        echo json_encode($_res); 
 	   die;
+    }
+
+
+    public function DashboardSettings(request $request){    
+      
+        // $_languages  = new languages();
+         $settings      = settings::all();
+ 
+         return view('dashboard.settings',compact('settings'));
+ 
+    }
+
+    public function LanguageSettings(request $request){        
+        $settings   = array();
+       // $_languages  = new languages();
+        $languages      = languages::all();
+
+        return view('dashboard.languages',compact('languages'));
+
+    }
+
+    public function AddLanguage(request $request){
+        $languages      = new languages();
+        $language_id    = $request->input('language_id');
+        $language_name  = $request->input('language_name');
+        $language_code  = $request->input('language_code');
+        $_language = array( 'language_code' => $language_code,
+                            'language_name' => $language_name
+                        );
+        $languages->language_code = $language_code;
+        $languages->language_name = $language_name;        
+        if($language_id != '')
+            $languages->id = $language_id;
+
+        $res = $languages->save($_language);
+
+        Session::flash('message', 'Language Added successfully'); 
+        Session::flash('alert-class', 'alert-success'); 
+        return Redirect::to('/languages/?status=1');
+
+    }
+
+    public static function LanguageKeyInsert(request $request){
+        $language     = new Language_keys();
+        $language->language_index = isset($_REQUEST['language_index']) ? $_REQUEST['language_index'] : '';
+        $language->description = isset($_REQUEST['description']) ? $_REQUEST['description'] : '';
+        $language->save();
+        return Redirect::to('/languages/keys');
+    }
+
+
+    
+
+   
+
+    public function LanguageIndex(request $request){    
+        $settings   = array();       
+        $languages      = Language_keys::all();
+        return view('dashboard.languagekeys',compact('languages'));
+    }
+
+    public function LanguageUpdate(request $request){
+        $language_key = isset($_REQUEST['language_key']) ? $_REQUEST['language_key'] : null;
+        $language_id = isset($_REQUEST['language_id']) ? $_REQUEST['language_id'] : 0;
+        $index_id = isset($_REQUEST['index_id']) ? $_REQUEST['index_id'] : 0;
+        $location_index = isset($_REQUEST['location_index']) ? $_REQUEST['location_index'] : 0;
+       
+        if(!empty($location_index)){            
+            foreach($location_index as $langKey => $_lang){
+                
+                if(is_array($_lang)){
+                    $_lang = json_encode($_lang);
+                }
+
+
+                $saved_index                = isset($index_id[$langKey]) ? $index_id[$langKey] : 0;
+
+                if($saved_index){
+                    //$details->id  = $saved_index;
+                    $details = language_details::find($saved_index);
+                }else{
+                    $details = new language_details();
+                }
+
+                $details->language_key      = isset($language_key[$langKey]) ? $language_key[$langKey] : $langKey;
+                $details->language_string   = $_lang;
+                $details->language_id       = $language_id;
+                
+               // echo "saved_index".$saved_index; die; 
+               // print_r($details);
+                $details->save();
+            }
+        }
+        $_res = array('status'=> 'true','message' => ''); 
+        echo json_encode($_res);
+        die;
+    }
+
+    public function LanguageView($_id){    
+        $jsonString     = $languages = array();       
+        $is_empty       = 0;
+        $languagekeys   = Language_keys::all();
+        $jsonString     = array();
+        $count_languages       =  language_details::leftjoin('languages','language_details.language_id','=','languages.id')->leftjoin('language_keys','language_details.language_key','=','language_keys.id')->where('languages.id',$_id)->select(['language_details.*','languages.language_code','languages.language_name','language_keys.language_index'])->get()->count();
+        
+        if(empty($count_languages)){
+            
+            $item_languages      = languages::where('id',$_id)->first();
+            if(!empty($item_languages)){
+                $code = $item_languages->language_code;
+                if(File::exists(base_path('resources/lang/'.$code.'.json'))){
+                    $jsonString = file_get_contents(base_path('resources/lang/'.$code.'.json'));
+                    $jsonString = json_decode($jsonString, true);                      
+                }
+            }
+            $is_empty = 1;
+            $languages = $languagekeys;            
+        }else{
+
+            $languages        =  Language_keys::leftjoin('language_details','language_keys.id','=','language_details.language_key')->leftjoin('languages','language_details.language_id','=','languages.id')->where('languages.id',$_id)->select(['language_details.*','languages.language_code','languages.language_name','language_keys.language_index'])->get();
+        }       
+
+        $lang_keys = array();
+        foreach($languagekeys as $key_lang){
+            $language_index = $key_lang->language_index;
+            $lang_keys[$language_index]    = $key_lang;
+        }
+        $lang = $_id;
+        return view('dashboard.languagedetails',compact('languagekeys','languages','is_empty','jsonString','lang','lang_keys'));
+    }
+
+    public function StoreSettings(){
+        $_languages      = languages::all(); 
+        $stores         = stores::all();
+        $languages      = array();
+        foreach($_languages as $lang){
+            $_id            = $lang->id;
+            $language_code  = $lang->language_code;
+            $language_name  = $lang->language_name;
+            $languages[$_id]= $lang->language_name;
+        }
+        return view('dashboard.stores',compact('languages','stores'));
+    }
+    
+    public function AddNewStore(request $request){
+        $store     = new stores();
+        $store->site_url = isset($_REQUEST['site_url']) ? $_REQUEST['site_url'] : '';
+        $store->order_prefix = isset($_REQUEST['order_prefix']) ? $_REQUEST['order_prefix'] : '';
+        $store->language_id = isset($_REQUEST['language_id']) ? $_REQUEST['language_id'] : 0;
+        $store->save();
+        return Redirect::to('/stores');
+    }
+
+    public function ShippingMethod(){
+        $_languages     = languages::all(); 
+        $stores         = stores::all();
+        $methods        = shipping_methods::all();
+        return view('dashboard.shipping',compact('stores','methods'));
+    }
+
+    public function getAllStores(){        
+        $portal_store   = array();
+        $stores         = stores::all();
+        if(!empty($stores)){
+            foreach($stores as $_store){
+                $order_prefix = $_store->order_prefix;
+                $site_url = $_store->site_url; 
+                $portal_store[$order_prefix] = $site_url;
+            }
+        }
+        return $portal_store;
+    }
+
+    public function AddShippingMethod(request $request){
+        $method     = new shipping_methods();
+        $method->shipping_name  = isset($_REQUEST['shipping_name']) ? $_REQUEST['shipping_name'] : '';
+        $method->shipping_title = isset($_REQUEST['shipping_title']) ? $_REQUEST['shipping_title'] : '';
+        $method->price = isset($_REQUEST['price']) ? $_REQUEST['price'] : 0;
+        if ($request->hasFile('shipping_logo')) {
+            $logo = $request->file('shipping_logo');//use the method in the trait
+
+            $_filename  =  $logo->getClientOriginalName();
+            $_file      =  $logo->getPathname();
+
+            
+            $logo->move(public_path('/uploads'), $_filename);
+            $path = '/uploads/'.$_filename;
+            $method->shipping_logo = $path;          
+        }
+        $method->save();
+        return Redirect::to('/shipping-method');
+    }
+
+    public function ConfigShippingMethod(){
+        $our_stores = array();
+        $_id        = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+        $method     = shipping_methods::find($_id); 
+        $all_stores = stores::all();
+        $stores     = stores::leftjoin('stroe_shippings','stores.id','=','stroe_shippings.store_id')                    
+                    ->where('stroe_shippings.shipping_method',$_id)->select(['stores.*','stroe_shippings.shipping_price','stroe_shippings.is_default','stroe_shippings.is_free','stroe_shippings.id as ship_id','stroe_shippings.is_active'])->get();
+
+        if(!empty($all_stores)){
+            foreach($all_stores as $store){
+                $store_id = $store->id;
+                $our_stores[$store_id] = $store;
+            }
+        }          
+        return view('dashboard.store-shipping',compact('our_stores','stores','method'));
+    }
+
+
+
+    public function ShippingMethodPost(request $request){
+        //$method     = new shipping_methods();
+        $method_id  = isset($_REQUEST['method_id']) ? $_REQUEST['method_id'] : 0;
+        $method     = shipping_methods::find($method_id);
+        $method->shipping_name  = isset($_REQUEST['shipping_name']) ? $_REQUEST['shipping_name'] : '';
+        $method->shipping_title = isset($_REQUEST['shipping_title']) ? $_REQUEST['shipping_title'] : '';
+        $method->price = isset($_REQUEST['price']) ? $_REQUEST['price'] : 0;
+        $method->status = isset($_REQUEST['status']) ? $_REQUEST['status'] : 0;
+        $method->is_pickup = isset($_REQUEST['is_pickup']) ? $_REQUEST['is_pickup'] : 0;
+        $method->ship_label = isset($_REQUEST['ship_label']) ? $_REQUEST['ship_label'] : 0;
+        if ($request->hasFile('shipping_logo')) {
+            $logo = $request->file('shipping_logo');//use the method in the trait
+
+            $_filename  =  $logo->getClientOriginalName();
+            $_file      =  $logo->getPathname();
+
+            
+            $logo->move(public_path('/uploads'), $_filename);
+            $path = '/uploads/'.$_filename;
+            $method->shipping_logo = $path;          
+        }
+        $method->save();
+
+        $shipping_price = isset($_REQUEST['shipping_price']) ? $_REQUEST['shipping_price'] : '';
+        $is_default     = isset($_REQUEST['is_default']) ? $_REQUEST['is_default'] : '';
+        $is_free        = isset($_REQUEST['is_free']) ? $_REQUEST['is_free'] : '';
+        $ship_id        = isset($_REQUEST['ship_id']) ? $_REQUEST['ship_id'] : '';
+
+        $is_active        = isset($_REQUEST['is_active']) ? $_REQUEST['is_active'] : '';
+       // $is_pickup        = isset($_REQUEST['is_pickup']) ? $_REQUEST['is_pickup'] : '';
+        
+        if(!empty($shipping_price)){
+            foreach($shipping_price as $store_id => $_sip){
+                $_sid = isset($ship_id[$store_id]) ? $ship_id[$store_id] : 0;
+                if($_sid){
+                    $_shipping     = stroe_shipping::find($_sid);                    
+                }else{
+                    $_shipping     = new stroe_shipping();                    
+                }
+
+                $_shipping->shipping_price = isset($shipping_price[$store_id]) ? $shipping_price[$store_id] : 0;
+                $_shipping->shipping_method = $method_id;
+                $_shipping->store_id = $store_id;
+                $_shipping->is_default = isset($is_default[$store_id]) ? $is_default[$store_id] : 0;
+                $_shipping->is_free = isset($is_free[$store_id]) ? $is_free[$store_id] : 0;
+                $_shipping->is_active = isset($is_active[$store_id]) ? $is_active[$store_id] : 0;
+             //   $_shipping->is_pickup = isset($is_pickup[$store_id]) ? $is_pickup[$store_id] : 0;
+                $_shipping->save();
+            }
+        }        
+        return Redirect::to('/config-stores/?id='.$method_id);
+    }   
+
+
+    public function UpdateStoreShipping(request $request){
+        $store_id   = isset($_REQUEST['store_id']) ? $_REQUEST['store_id'] : 0;
+        $store      = stores::find($store_id);
+        $store->language_id     = isset($_REQUEST['language_id']) ? $_REQUEST['language_id'] : 0;
+        $store->site_url        = isset($_REQUEST['site_url']) ? $_REQUEST['site_url'] : 0;
+        $store->order_prefix    = isset($_REQUEST['order_prefix']) ? $_REQUEST['order_prefix'] : 0;
+        $store->save();
+
+
+        $shipping_price  = isset($_REQUEST['shipping_price']) ? $_REQUEST['shipping_price'] : '';
+        $is_default      = isset($_REQUEST['is_default']) ? $_REQUEST['is_default'] : '';
+        $is_free         = isset($_REQUEST['is_free']) ? $_REQUEST['is_free'] : '';
+        $method_id       = isset($_REQUEST['method_id']) ? $_REQUEST['method_id'] : '';
+
+        $is_active       = isset($_REQUEST['is_active']) ? $_REQUEST['is_active'] : '';
+        $ship_id         = isset($_REQUEST['ship_id']) ? $_REQUEST['ship_id'] : '';
+       // $is_pickup        = isset($_REQUEST['is_pickup']) ? $_REQUEST['is_pickup'] : '';
+
+
+     
+        if(!empty($shipping_price)){
+            foreach($shipping_price as $method_id => $_sip){
+                $_sid = isset($ship_id[$method_id]) ? $ship_id[$method_id] : 0;
+                if($_sid){
+                    $_shipping     = stroe_shipping::find($_sid);                    
+                }else{
+                    $_shipping     = new stroe_shipping();                    
+                }
+
+
+                $_shipping->shipping_price = $_sip;
+                $_shipping->shipping_method = $method_id;
+                $_shipping->store_id = $store_id;
+                $_shipping->is_default = isset($is_default[$method_id]) ? $is_default[$method_id] : 0;
+                $_shipping->is_free = isset($is_free[$method_id]) ? $is_free[$method_id] : 0;
+                $_shipping->is_active = isset($is_active[$method_id]) ? $is_active[$method_id] : 0;
+               // $_shipping->is_pickup = isset($is_pickup[$store_id]) ? $is_pickup[$store_id] : 0;
+                $_shipping->save();
+            }
+        }
+
+        return Redirect::to('/store-shipping-config/?id='.$store_id);
+
+    }
+    
+    
+    public function ConfigStoreShipping(){
+        $our_stores     = array();
+        $store_id            = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+        $_languages     = languages::all();         
+        $languages      = array();
+        $methods        = array();
+        $ship_method    = shipping_methods::all();
+        foreach($_languages as $lang){
+            $_id            = $lang->id;
+            $language_code  = $lang->language_code;
+            $language_name  = $lang->language_name;
+            $languages[$_id]= $lang->language_name;
+        }
+
+        if(!empty($ship_method)){
+            foreach($ship_method as $_method){
+                $methods[$_method->id] = $_method;
+            }
+        }
+
+        $store      = stores::find($store_id);         
+        $shiping    = stores::leftjoin('stroe_shippings','stores.id','=','stroe_shippings.store_id')                    
+                    ->leftjoin('shipping_methods','stroe_shippings.shipping_method','=','shipping_methods.id')                    
+                    ->where('stroe_shippings.store_id',$store_id)->select(['stores.*','stroe_shippings.shipping_price','stroe_shippings.is_default','stroe_shippings.is_free','stroe_shippings.id as ship_id','shipping_methods.shipping_title','shipping_methods.shipping_title','stroe_shippings.shipping_method','stroe_shippings.is_active'])->orderBy('stroe_shippings.is_active','DESC')->get();
+             
+       
+        return view('dashboard.store-shipping-price',compact('store','shiping','languages','methods'));
     }
 }

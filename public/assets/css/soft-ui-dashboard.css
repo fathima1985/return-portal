@@ -85,7 +85,9 @@
     top: -2px;
     left: 5px;
   }
-	
+	.list-group .form-label,.list-group label{
+    margin-bottom: 0px !important;
+  }
 	
 	
 

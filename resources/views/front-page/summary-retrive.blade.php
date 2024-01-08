@@ -107,11 +107,11 @@
 								<div class="shipping-list">
 									@foreach($shipping as $key => $value)
 									<div class="form-group py-3 px-4 @if($ship_details['shiping_method'] != $key ) d-none @else active-selection @endif">								
-										<input type="radio" name="ship_method" class="ship_method" value="{{$key}}" id="{{$key}}" @if($ship_details['shiping_method'] == $key ) checked="checked" @endif />
+										<input type="radio" name="ship_method @if($value['pickup']) method_pickup @endif" class="ship_method" value="{{$key}}" id="{{$key}}" @if($ship_details['shiping_method'] == $key ) checked="checked" @elseif ($value['default'] == 1)  checked="checked"  @endif />
 										<label for="{{$key}}" class="d-flex align-items-center justify-content-between position-relative">
 											<span class="ship-name">
 												@if($value['icon'] != '')	
-													<img src="{{url('assets/images')}}/{{$value['icon']}}" alt="{{$key}}"/>
+													<img src="{{{{$value['icon']}}" alt="{{$key}}"/>
 												@endif
 												<h4 class="name">{!!$value['name']!!}</h4>
 												<p class="">{!!$value['instruction']!!}</p>

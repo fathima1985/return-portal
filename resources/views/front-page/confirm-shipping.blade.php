@@ -15,11 +15,11 @@
 							@php $i = 0 @endphp
 							@foreach($shipping as $key => $value)
 							<div class="form-group py-3 px-4">								
-								<input type="radio" name="ship_method" class="ship_method" value="{{$key}}" id="{{$key}}" @if($data['retrive'] == 1 && $data['ship_method'] == $key) checked   @endif />
+								<input type="radio" name="ship_method" class="ship_method @if($value['pickup']) method_pickup @endif" data-pickup="{{$value['pickup']}}" value="{{$key}}" id="{{$key}}" @if($data['retrive'] == 1 && $data['ship_method'] == $key) checked   @elseif ($value['default'] == 1) checked  @endif />
 								<label for="{{$key}}" class="d-flex align-items-center justify-content-between position-relative">
 									<span class="ship-name">
 										@if(isset($value['icon']) && $value['icon'] != '')	
-										<img src="{{url('assets/images')}}/{{$value['icon']}}" alt="{{$key}}"/>
+										<img src="{{$value['icon']}}" alt="{{$key}}"/>
 										@endif
 
 										<h4 class="name">{!!$value['name']!!}</h4>

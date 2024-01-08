@@ -46,7 +46,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ (Request::is('edit-profile') ? 'active' : '') }} " href="{{ url('edit-profile') }}">
+        <a class="nav-link {{ (Request::is('settings') ? 'active' : '') }} " href="{{ url('settings') }}">
             <div class="icon icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-settings text-lg" aria-hidden="true"></i>               
             </div>
@@ -54,7 +54,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ (Request::is('edit-profile') ? 'active' : '') }} " href="{{ url('edit-profile') }}">
+        <a class="nav-link {{ (Request::is('shipping-method') ? 'active' : '') }} " href="{{ url('shipping-method') }}">
             <div class="icon icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-delivery-fast text-lg" aria-hidden="true"></i>               
             </div>
@@ -62,7 +62,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ (Request::is('edit-profile') ? 'active' : '') }} " href="{{ url('edit-profile') }}">
+        <a class="nav-link {{ (Request::is('stores') ? 'active' : '') }} " href="{{ url('stores') }}">
             <div class="icon icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-shop text-lg" aria-hidden="true"></i>               
             </div>
@@ -70,7 +70,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ (Request::is('edit-profile') ? 'active' : '') }} " href="{{ url('edit-profile') }}">
+        <a class="nav-link {{ (Request::is('languages') ? 'active' : '') }} " href="{{ url('languages') }}">
             <div class="icon icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-settings text-lg" aria-hidden="true"></i>               
             </div>
@@ -78,7 +78,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ (Request::is('edit-profile') ? 'active' : '') }} " href="{{ url('edit-profile') }}">
+        <a class="nav-link {{ (Request::is('create-return') ? 'active' : '') }} " href="{{ url('create-return') }}">
            <div class="icon icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-circle-08 text-lg" aria-hidden="true"></i>               
             </div>

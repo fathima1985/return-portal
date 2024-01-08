@@ -82,7 +82,50 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/assign-users', [DashboardController::class, 'assingTasks'])->name('assign-users'); 
 	Route::get('/assign-users', [DashboardController::class, 'assingTasks'])->name('assign-user'); 
 
+	Route::get('/languages', [DashboardController::class, 'LanguageSettings'])->name('languages'); 
+	Route::post('/add-language', [DashboardController::class, 'AddLanguage'])->name('add-language');
+	Route::get('/add-language', [DashboardController::class, 'AddLanguage'])->name('add-language');
 	
+	Route::post('/languages/keys', [DashboardController::class, 'LanguageKeyInsert'])->name('language-keys');
+	Route::get('/languages/keys', [DashboardController::class, 'LanguageIndex'])->name('language-keys');
+
+	Route::post('/languages/{language}', [DashboardController::class, 'LanguageView'])->name('language-view');
+	Route::get('/languages/{language}', [DashboardController::class, 'LanguageView'])->name('language-view');
+
+	Route::post('/update_language', [DashboardController::class, 'LanguageUpdate'])->name('update-key');
+	//Route::get('/languages/update_key', [DashboardController::class, 'LanguageUpdate'])->name('update-key');
+
+	Route::get('/stores', [DashboardController::class, 'StoreSettings'])->name('stores');
+	Route::post('/add-store', [DashboardController::class, 'AddNewStore'])->name('add_store'); 
+	Route::get('/store-shipping-config', [DashboardController::class, 'ConfigStoreShipping'])->name('store-shipping-config'); 
+	Route::post('/config-store-method', [DashboardController::class, 'UpdateStoreShipping'])->name('config-store-method'); 
+
+	
+
+	Route::get('/settings', [DashboardController::class, 'DashboardSettings'])->name('settings'); 
+	Route::post('/add-settings', [DashboardController::class, 'DashboardSettings'])->name('settings'); 
+	
+
+	Route::get('/shipping-method', [DashboardController::class, 'ShippingMethod'])->name('shipping-method'); 
+	Route::post('/add-method', [DashboardController::class, 'AddShippingMethod'])->name('add-method'); 
+	Route::get('/config-stores', [DashboardController::class, 'ConfigShippingMethod'])->name('config-stores');
+	
+
+	Route::post('/config-method', [DashboardController::class, 'ShippingMethodPost'])->name('config-method'); 
+
+	
+	
+
+	
+	Route::get('/create-return', [DashboardController::class, 'LanguageSettings'])->name('create-return'); 
+	
+
+	
+	
+	
+	
+	
+
     Route::get('/login', function () {
 		return view('dashboard');
 	})->name('sign-up');

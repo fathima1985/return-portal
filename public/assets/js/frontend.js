@@ -72,7 +72,7 @@ jQuery(document).ready(function($){
 	$(document.body).on('change','input.ship_method',function(e){
 		e.preventDefault();
 		var shipmethod = $(this).val();		
-		if($(this).is(':checked') && pickup.includes(shipmethod)){
+		if($(this).is(':checked') && $(this).hasClass('method_pickup')){
 			$('.gls-wrapper').fadeIn();
 			$('.gls-wrapper .form-control').each(function(){
 				if($(this).hasClass('required')){
@@ -92,12 +92,15 @@ jQuery(document).ready(function($){
 
 	$('form.confirm-payment').submit(function(e){		
 		var currentShip = $('input.ship_method:checked').val();
+		var ship_method  =  $('input.ship_method');
+		method_pickup
+		
 		if($('input.ship_method:checked').length == 0){
 			e.preventDefault();
 			$('.error-message').html(lang.shipping_error).show();
 			$("html, body").animate({ scrollTop: $('form.confirm-payment').offset().top });
 			return false;
-		}else if(pickup.includes(currentShip)){
+		}else if(ship_method.is(':checked') && ship_method.hasClass('method_pickup')){
 			var error = '';
 			$('.gls-wrapper .form-control').each(function(){
 				var _val = $(this).val();
